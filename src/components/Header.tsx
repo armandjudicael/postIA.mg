@@ -3,10 +3,18 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, Menu, User, Bell } from "lucide-react";
 import AuthModal from "@/components/AuthModal";
+import { useAuth } from "@/hooks/useAuth";
 
 const Header = () => {
+  const { isAuthenticated } = useAuth();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authModalTab, setAuthModalTab] = useState<"login" | "signup">("signup");
+  
+  // Don't render header on dashboard - handled by DashboardLayout
+  if (isAuthenticated) {
+    return null;
+  }
+  
   const handleGetStarted = () => {
     setAuthModalTab("signup");
     setIsAuthModalOpen(true);

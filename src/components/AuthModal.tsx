@@ -23,6 +23,7 @@ import {
   Zap
 } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -31,6 +32,7 @@ interface AuthModalProps {
 }
 
 const AuthModal = ({ isOpen, onClose, defaultTab = "login" }: AuthModalProps) => {
+  const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -42,14 +44,14 @@ const AuthModal = ({ isOpen, onClose, defaultTab = "login" }: AuthModalProps) =>
 
   const handleSocialLogin = async (provider: string) => {
     setIsLoading(true);
-    toast.info(`Connecting to ${provider}...`);
-    
-    // Simulate social login
-    setTimeout(() => {
-      toast.success(`Successfully connected with ${provider}!`);
-      setIsLoading(false);
+    try {
+      await login(provider);
       onClose();
-    }, 2000);
+    } catch (error) {
+      toast.error("Login failed. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleEmailAuth = async (isSignup: boolean) => {
@@ -75,12 +77,14 @@ const AuthModal = ({ isOpen, onClose, defaultTab = "login" }: AuthModalProps) =>
       }
     }
 
-    // Simulate auth process
-    setTimeout(() => {
-      toast.success(isSignup ? "Account created successfully!" : "Welcome back!");
-      setIsLoading(false);
+    try {
+      await login("Email");
       onClose();
-    }, 1500);
+    } catch (error) {
+      toast.error("Authentication failed. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

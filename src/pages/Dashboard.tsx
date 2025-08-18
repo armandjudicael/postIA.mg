@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import DashboardLayout from "@/components/DashboardLayout";
 import PlatformConnections from "@/components/PlatformConnections";
 import PostEditor from "@/components/PostEditor";
@@ -202,9 +203,11 @@ const Dashboard = () => {
   };
 
   return (
-    <DashboardLayout activeTab={activeTab} onTabChange={setActiveTab}>
-      {renderContent()}
-    </DashboardLayout>
+    <ProtectedRoute>
+      <DashboardLayout activeTab={activeTab} onTabChange={setActiveTab}>
+        {renderContent()}
+      </DashboardLayout>
+    </ProtectedRoute>
   );
 };
 

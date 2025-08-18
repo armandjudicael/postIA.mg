@@ -22,17 +22,16 @@ import {
 } from "lucide-react";
 
 import AuthModal from "@/components/AuthModal";
+import { useAuth } from "@/hooks/useAuth";
 
 const PostEditor = () => {
+  const { isAuthenticated } = useAuth();
   const [content, setContent] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [tone, setTone] = useState("professional");
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const handleGenerate = async () => {
-    // Check if user is authenticated (simulate)
-    const isAuthenticated = false; // This would come from your auth state
-    
     if (!isAuthenticated) {
       setIsAuthModalOpen(true);
       return;

@@ -5,17 +5,19 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Facebook, Twitter, Instagram, Linkedin, Check, Plus, Settings } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
 
 interface PlatformConnectionsProps {
   className?: string;
 }
 
 const PlatformConnections = ({ className }: PlatformConnectionsProps) => {
+  const { user, connectPlatform, disconnectPlatform } = useAuth();
   const [connections, setConnections] = useState({
-    facebook: { connected: false, enabled: true },
-    twitter: { connected: false, enabled: true },
-    instagram: { connected: false, enabled: true },
-    linkedin: { connected: false, enabled: false }
+    facebook: { connected: user?.connectedPlatforms.facebook || false, enabled: true },
+    twitter: { connected: user?.connectedPlatforms.twitter || false, enabled: true },
+    instagram: { connected: user?.connectedPlatforms.instagram || false, enabled: true },
+    linkedin: { connected: user?.connectedPlatforms.google || false, enabled: false }
   });
 
   const platforms = [
@@ -58,24 +60,23 @@ const PlatformConnections = ({ className }: PlatformConnectionsProps) => {
   ];
 
   const handleConnect = async (platformId: string) => {
-    toast.info(`Connecting to ${platforms.find(p => p.id === platformId)?.name}...`);
-    
-    // Simulate connection process
-    setTimeout(() => {
+    try {
+      await connectPlatform(platformId);
       setConnections(prev => ({
         ...prev,
         [platformId]: { ...prev[platformId as keyof typeof prev], connected: true }
       }));
-      toast.success(`Successfully connected to ${platforms.find(p => p.id === platformId)?.name}!`);
-    }, 2000);
+    } catch (error) {
+      toast.error("Connection failed. Please try again.");
+    }
   };
 
   const handleDisconnect = (platformId: string) => {
+    disconnectPlatform(platformId);
     setConnections(prev => ({
       ...prev,
       [platformId]: { ...prev[platformId as keyof typeof prev], connected: false }
     }));
-    toast.info(`Disconnected from ${platforms.find(p => p.id === platformId)?.name}`);
   };
 
   const toggleEnabled = (platformId: string) => {

@@ -19,6 +19,7 @@ import {
   Zap
 } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -27,6 +28,7 @@ interface DashboardLayoutProps {
 }
 
 const DashboardLayout = ({ children, activeTab = "dashboard", onTabChange }: DashboardLayoutProps) => {
+  const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const navigationItems = [
@@ -39,8 +41,7 @@ const DashboardLayout = ({ children, activeTab = "dashboard", onTabChange }: Das
   ];
 
   const handleLogout = () => {
-    toast.success("Logged out successfully");
-    // Handle logout logic
+    logout();
   };
 
   const handleNavigation = (tabId: string) => {
