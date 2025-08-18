@@ -1,9 +1,29 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, Menu, User, Bell } from "lucide-react";
+import AuthModal from "@/components/AuthModal";
 
 const Header = () => {
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authModalTab, setAuthModalTab] = useState<"login" | "signup">("signup");
+  const handleGetStarted = () => {
+    setAuthModalTab("signup");
+    setIsAuthModalOpen(true);
+  };
+
+  const handleUserLogin = () => {
+    setAuthModalTab("login");
+    setIsAuthModalOpen(true);
+  };
+
   return (
+    <>
+      <AuthModal 
+        isOpen={isAuthModalOpen} 
+        onClose={() => setIsAuthModalOpen(false)}
+        defaultTab={authModalTab}
+      />
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
@@ -47,11 +67,11 @@ const Header = () => {
             <span className="absolute -top-1 -right-1 h-3 w-3 bg-primary rounded-full"></span>
           </Button>
           
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" onClick={handleUserLogin}>
             <User className="h-4 w-4" />
           </Button>
 
-          <Button variant="hero" className="hidden sm:flex">
+          <Button variant="hero" className="hidden sm:flex" onClick={handleGetStarted}>
             Get Started
           </Button>
 
@@ -60,7 +80,8 @@ const Header = () => {
           </Button>
         </div>
       </div>
-    </header>
+      </header>
+    </>
   );
 };
 

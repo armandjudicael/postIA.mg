@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -10,9 +11,31 @@ import {
   ArrowRight 
 } from "lucide-react";
 import heroImage from "@/assets/hero-dashboard.jpg";
+import AuthModal from "@/components/AuthModal";
+import DemoModal from "@/components/DemoModal";
 
 const HeroSection = () => {
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
+
+  const handleStartCreating = () => {
+    setIsAuthModalOpen(true);
+  };
+
+  const handleWatchDemo = () => {
+    setIsDemoModalOpen(true);
+  };
   return (
+    <>
+      <AuthModal 
+        isOpen={isAuthModalOpen} 
+        onClose={() => setIsAuthModalOpen(false)}
+        defaultTab="signup"
+      />
+      <DemoModal 
+        isOpen={isDemoModalOpen} 
+        onClose={() => setIsDemoModalOpen(false)}
+      />
     <section className="relative overflow-hidden bg-gradient-hero">
       {/* Background Effects */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/20" />
@@ -50,12 +73,12 @@ const HeroSection = () => {
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button variant="hero" size="lg" className="group">
+              <Button variant="hero" size="lg" className="group" onClick={handleStartCreating}>
                 Start Creating Free
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-smooth" />
               </Button>
               
-              <Button variant="glass" size="lg">
+              <Button variant="glass" size="lg" onClick={handleWatchDemo}>
                 Watch Demo
               </Button>
             </div>
@@ -105,7 +128,8 @@ const HeroSection = () => {
           </div>
         </div>
       </div>
-    </section>
+      </section>
+    </>
   );
 };
 
