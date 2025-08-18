@@ -85,19 +85,28 @@ const AuthModal = ({ isOpen, onClose, defaultTab = "login" }: AuthModalProps) =>
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader className="text-center">
-          <div className="flex items-center justify-center mb-2">
-            <div className="flex items-center space-x-2">
-              <Sparkles className="h-6 w-6 text-primary animate-pulse-glow" />
-              <DialogTitle className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                PostIA.mg
-              </DialogTitle>
+      <DialogContent className="sm:max-w-md backdrop-blur-xl bg-background/95 border border-white/10 shadow-modal">
+        <DialogHeader className="text-center space-y-4">
+          <div className="flex items-center justify-center">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-primary rounded-full blur-lg opacity-60" />
+              <div className="relative bg-background/80 backdrop-blur-sm rounded-full p-3 border border-white/20">
+                <Sparkles className="h-8 w-8 text-primary animate-pulse-glow" />
+              </div>
             </div>
           </div>
-          <DialogDescription>
-            Join thousands of creators using AI to grow their social media presence
-          </DialogDescription>
+          <div className="space-y-2">
+            <DialogTitle className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+              Welcome to PostIA.mg
+            </DialogTitle>
+            <DialogDescription className="text-muted-foreground/80">
+              Join thousands of creators using AI to grow their social media presence
+            </DialogDescription>
+            <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground/60">
+              <Zap className="h-3 w-3" />
+              <span>AI-Powered Content Creation</span>
+            </div>
+          </div>
         </DialogHeader>
 
         <Tabs defaultValue={defaultTab} className="w-full">
@@ -112,22 +121,37 @@ const AuthModal = ({ isOpen, onClose, defaultTab = "login" }: AuthModalProps) =>
               <div className="space-y-3">
                 <Button
                   variant="outline"
-                  className="w-full"
+                  className="w-full relative overflow-hidden group border-blue-500/20 hover:border-blue-500/40 transition-all duration-300"
                   onClick={() => handleSocialLogin("Facebook")}
                   disabled={isLoading}
                 >
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                   <Facebook className="h-4 w-4 mr-2 text-blue-600" />
-                  Continue with Facebook
+                  <span className="relative">Continue with Facebook</span>
                 </Button>
                 
                 <Button
                   variant="outline"
-                  className="w-full"
+                  className="w-full relative overflow-hidden group border-foreground/20 hover:border-foreground/40 transition-all duration-300"
                   onClick={() => handleSocialLogin("Twitter/X")}
                   disabled={isLoading}
                 >
+                  <div className="absolute inset-0 bg-gradient-to-r from-foreground/5 to-foreground/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                   <Twitter className="h-4 w-4 mr-2" />
-                  Continue with X (Twitter)
+                  <span className="relative">Continue with X (Twitter)</span>
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  className="w-full relative overflow-hidden group border-pink-500/20 hover:border-pink-500/40 transition-all duration-300"
+                  onClick={() => handleSocialLogin("Instagram")}
+                  disabled={isLoading}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-pink-500/10 to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="h-4 w-4 mr-2 bg-gradient-to-r from-pink-500 to-purple-600 rounded-sm flex items-center justify-center">
+                    <div className="h-2 w-2 bg-background rounded-full" />
+                  </div>
+                  <span className="relative">Continue with Instagram</span>
                 </Button>
               </div>
 
@@ -210,22 +234,37 @@ const AuthModal = ({ isOpen, onClose, defaultTab = "login" }: AuthModalProps) =>
               <div className="space-y-3">
                 <Button
                   variant="outline"
-                  className="w-full"
+                  className="w-full relative overflow-hidden group border-blue-500/20 hover:border-blue-500/40 transition-all duration-300"
                   onClick={() => handleSocialLogin("Facebook")}
                   disabled={isLoading}
                 >
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                   <Facebook className="h-4 w-4 mr-2 text-blue-600" />
-                  Sign up with Facebook
+                  <span className="relative">Sign up with Facebook</span>
                 </Button>
                 
                 <Button
                   variant="outline"
-                  className="w-full"
+                  className="w-full relative overflow-hidden group border-foreground/20 hover:border-foreground/40 transition-all duration-300"
                   onClick={() => handleSocialLogin("Twitter/X")}
                   disabled={isLoading}
                 >
+                  <div className="absolute inset-0 bg-gradient-to-r from-foreground/5 to-foreground/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                   <Twitter className="h-4 w-4 mr-2" />
-                  Sign up with X (Twitter)
+                  <span className="relative">Sign up with X (Twitter)</span>
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  className="w-full relative overflow-hidden group border-pink-500/20 hover:border-pink-500/40 transition-all duration-300"
+                  onClick={() => handleSocialLogin("Instagram")}
+                  disabled={isLoading}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-pink-500/10 to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="h-4 w-4 mr-2 bg-gradient-to-r from-pink-500 to-purple-600 rounded-sm flex items-center justify-center">
+                    <div className="h-2 w-2 bg-background rounded-full" />
+                  </div>
+                  <span className="relative">Sign up with Instagram</span>
                 </Button>
               </div>
 

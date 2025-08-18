@@ -53,19 +53,23 @@ const PostEditor = () => {
         onClose={() => setIsAuthModalOpen(false)}
         defaultTab="signup"
       />
-      <section className="py-24 bg-muted/30">
-        <div className="container px-4">
-          <div className="text-center space-y-4 mb-12">
-            <div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
-              <Wand2 className="h-4 w-4 text-primary mr-2" />
-              <span className="text-sm font-medium text-primary">Live Demo</span>
+      <section className="py-20 bg-gradient-subtle">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <div className="flex items-center justify-center mb-4">
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-primary rounded-full blur-lg opacity-60" />
+                <div className="relative bg-background/80 backdrop-blur-sm rounded-full p-3 border border-white/20">
+                  <Sparkles className="h-8 w-8 text-primary animate-pulse-glow" />
+                </div>
+              </div>
             </div>
-            
-            <h2 className="text-3xl sm:text-5xl font-bold text-foreground">
-              Try the
-              <span className="bg-gradient-primary bg-clip-text text-transparent"> AI Editor </span>
-              Now
+            <h2 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-4">
+              AI-Powered Post Creator
             </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Experience the power of AI content generation. Create engaging posts for all your social media platforms in seconds.
+            </p>
           </div>
 
           <div className="max-w-6xl mx-auto">
