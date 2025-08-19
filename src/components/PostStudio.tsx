@@ -195,31 +195,124 @@ const PostStudio = () => {
   };
 
   const handlePublishNow = async () => {
+    if (!isAuthenticated) {
+      setIsAuthModalOpen(true);
+      return;
+    }
+
     if (!validatePost()) {
+      toast.error("Please fix validation errors before publishing");
       return;
     }
 
     setIsPublishing(true);
     setPublishError("");
+    setPublishStatus('draft');
     
     try {
-      // Simulate publishing to selected platforms
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Enhanced publishing logic with platform-specific handling
+      const publishResults = [];
       
-      setPublishStatus('published');
-      toast.success(`Published to ${selectedPlatforms.join(', ')} successfully!`);
+      for (const platform of selectedPlatforms) {
+        try {
+          // Simulate platform-specific publishing with different delays
+          const delay = platform === 'twitter' ? 1000 : platform === 'instagram' ? 1500 : 2000;
+          await new Promise(resolve => setTimeout(resolve, delay));
+          
+          // Platform-specific content optimization
+          let optimizedContent = content;
+          if (platform === 'twitter' && content.length > 280) {
+            optimizedContent = content.substring(0, 277) + '...';
+          }
+          
+          // Store publish data locally
+          const publishData = {
+            id: Date.now() + Math.random(),
+            content: optimizedContent,
+            platform,
+            media: selectedMedia,
+            timestamp: new Date().toISOString(),
+            status: 'published',
+            engagement: {
+              likes: Math.floor(Math.random() * 100),
+              shares: Math.floor(Math.random() * 50),
+              comments: Math.floor(Math.random() * 30)
+            }
+          };
+          
+          // Save to localStorage for persistence
+          const existingPosts = JSON.parse(localStorage.getItem('publishedPosts') || '[]');
+          existingPosts.unshift(publishData);
+          localStorage.setItem('publishedPosts', JSON.stringify(existingPosts.slice(0, 50))); // Keep last 50 posts
+          
+          publishResults.push({ platform, success: true, data: publishData });
+          
+          // Show individual platform success
+          toast.success(`✅ Published to ${platform.charAt(0).toUpperCase() + platform.slice(1)}`);
+          
+        } catch (platformError) {
+          publishResults.push({ platform, success: false, error: platformError });
+          toast.error(`❌ Failed to publish to ${platform}`);
+        }
+      }
       
-      // Clear form after successful publish
-      setTimeout(() => {
-        setContent("");
-        setSelectedMedia([]);
-        setPublishStatus('draft');
-      }, 2000);
+      const successfulPublishes = publishResults.filter(r => r.success);
+      const failedPublishes = publishResults.filter(r => !r.success);
+      
+      if (successfulPublishes.length > 0) {
+        setPublishStatus('published');
+        
+        // Final success message
+        const successPlatforms = successfulPublishes.map(r => r.platform).join(', ');
+        toast.success(`🎉 Successfully published to ${successPlatforms}!`, {
+          duration: 4000,
+          action: {
+            label: "View Posts",
+            onClick: () => window.open('/dashboard', '_blank')
+          }
+        });
+        
+        // Save draft before clearing
+        if (content.trim()) {
+          const draftData = {
+            content,
+            contentType,
+            selectedMedia,
+            platform,
+            tone,
+            timestamp: new Date().toISOString(),
+            status: 'published'
+          };
+          
+          const existingDrafts = JSON.parse(localStorage.getItem('postStudio_drafts') || '[]');
+          existingDrafts.unshift(draftData);
+          localStorage.setItem('postStudio_drafts', JSON.stringify(existingDrafts.slice(0, 10)));
+        }
+        
+        // Clear form after successful publish
+        setTimeout(() => {
+          setContent("");
+          setSelectedMedia([]);
+          setPublishStatus('draft');
+          addToHistory(""); // Reset content history
+        }, 2000);
+      }
+      
+      if (failedPublishes.length > 0) {
+        setPublishStatus('error');
+        setPublishError(`Failed to publish to ${failedPublishes.map(r => r.platform).join(', ')}`);
+      }
       
     } catch (error) {
       setPublishStatus('error');
-      setPublishError("Failed to publish. Please try again.");
-      toast.error("Publishing failed");
+      setPublishError("Unexpected error occurred during publishing");
+      toast.error("❌ Publishing failed unexpectedly", {
+        description: "Please check your connection and try again",
+        action: {
+          label: "Retry",
+          onClick: () => handlePublishNow()
+        }
+      });
     } finally {
       setIsPublishing(false);
     }
