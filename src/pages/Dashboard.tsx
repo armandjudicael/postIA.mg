@@ -3,6 +3,8 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import DashboardLayout from "@/components/DashboardLayout";
 import PlatformConnections from "@/components/PlatformConnections";
 import PostStudio from "@/components/PostStudio";
+import ScheduleManager from "@/components/ScheduleManager";
+import PublishManager from "@/components/PublishManager";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -26,6 +28,64 @@ const Dashboard = () => {
     switch (activeTab) {
       case "posts":
         return <PostStudio />;
+      case "schedule":
+        return <ScheduleManager />;
+      case "analytics":
+        return (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">
+                Analytics Dashboard
+              </h2>
+              <p className="text-muted-foreground mb-6">
+                Track your content performance and engagement metrics.
+              </p>
+            </div>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              <Card className="bg-gradient-subtle border-white/10">
+                <CardContent className="p-6">
+                  <div className="text-center space-y-2">
+                    <BarChart3 className="h-8 w-8 text-primary mx-auto" />
+                    <p className="text-2xl font-bold">24.5K</p>
+                    <p className="text-sm text-muted-foreground">Total Reach</p>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="bg-gradient-subtle border-white/10">
+                <CardContent className="p-6">
+                  <div className="text-center space-y-2">
+                    <Heart className="h-8 w-8 text-ai-accent mx-auto" />
+                    <p className="text-2xl font-bold">12.8%</p>
+                    <p className="text-sm text-muted-foreground">Engagement Rate</p>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="bg-gradient-subtle border-white/10">
+                <CardContent className="p-6">
+                  <div className="text-center space-y-2">
+                    <TrendingUp className="h-8 w-8 text-ai-success mx-auto" />
+                    <p className="text-2xl font-bold">+28%</p>
+                    <p className="text-sm text-muted-foreground">Growth Rate</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        );
+      case "billing":
+        return (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">
+                Billing & Credits
+              </h2>
+              <p className="text-muted-foreground mb-6">
+                Manage your subscription and AI credits usage.
+              </p>
+            </div>
+            <PublishManager />
+          </div>
+        );
       case "settings":
         return (
           <div className="space-y-6">

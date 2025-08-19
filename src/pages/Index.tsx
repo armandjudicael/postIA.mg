@@ -33,7 +33,6 @@ const Index = () => {
         <FeaturesSection />
         <PostBuilder />
         <TestimonialsSection />
-        <MobileAppSection />
       </main>
       <Footer />
     </div>

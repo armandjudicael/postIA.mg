@@ -8,7 +8,10 @@ import {
   BarChart3, 
   Users, 
   Clock,
-  ArrowRight 
+  ArrowRight,
+  Smartphone,
+  Play,
+  Star
 } from "lucide-react";
 import heroImage from "@/assets/hero-dashboard.jpg";
 import AuthModal from "@/components/AuthModal";
@@ -79,8 +82,49 @@ const HeroSection = () => {
               </Button>
               
               <Button variant="glass" size="lg" onClick={handleWatchDemo}>
+                <Play className="mr-2 h-4 w-4" />
                 Watch Demo
               </Button>
+
+              <Button variant="glass" size="lg">
+                <Smartphone className="mr-2 h-4 w-4" />
+                Download App
+              </Button>
+            </div>
+
+            {/* App Store Buttons */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button variant="default" size="sm" className="bg-black text-white hover:bg-gray-800">
+                <div className="flex items-center space-x-2">
+                  <span>📱</span>
+                  <div className="text-left">
+                    <div className="text-xs">Download on the</div>
+                    <div className="font-semibold text-sm">App Store</div>
+                  </div>
+                </div>
+              </Button>
+              
+              <Button variant="default" size="sm" className="bg-black text-white hover:bg-gray-800">
+                <div className="flex items-center space-x-2">
+                  <span>▶</span>
+                  <div className="text-left">
+                    <div className="text-xs">Get it on</div>
+                    <div className="font-semibold text-sm">Google Play</div>
+                  </div>
+                </div>
+              </Button>
+            </div>
+
+            {/* Rating */}
+            <div className="flex items-center space-x-4">
+              <div className="flex space-x-1">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                ))}
+              </div>
+              <span className="text-sm text-white/70">
+                4.9/5 from 2,000+ reviews
+              </span>
             </div>
 
             {/* Stats */}

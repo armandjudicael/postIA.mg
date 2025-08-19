@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { 
   Sparkles, 
   LayoutDashboard, 
@@ -16,7 +17,9 @@ import {
   LogOut,
   Menu,
   X,
-  Zap
+  Zap,
+  PanelLeftOpen,
+  PanelLeftClose
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
@@ -30,6 +33,7 @@ interface DashboardLayoutProps {
 const DashboardLayout = ({ children, activeTab = "dashboard", onTabChange }: DashboardLayoutProps) => {
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const navigationItems = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -114,15 +118,33 @@ const DashboardLayout = ({ children, activeTab = "dashboard", onTabChange }: Das
         </div>
       </header>
 
-      <div className="flex">
-        {/* Sidebar */}
-        <aside className={`
-          fixed lg:relative inset-y-0 left-0 z-40 w-64 bg-background/95 backdrop-blur border-r border-border/40
-          transform transition-transform duration-300 ease-in-out
-          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-        `}>
+      <ResizablePanelGroup direction="horizontal" className="min-h-[calc(100vh-4rem)]">
+        {/* Sidebar Panel */}
+        <ResizablePanel 
+          defaultSize={20} 
+          minSize={15} 
+          maxSize={35}
+          className={`
+            ${sidebarOpen || window.innerWidth >= 1024 ? 'block' : 'hidden lg:block'}
+            bg-background/95 backdrop-blur border-r border-border/40
+          `}
+        >
           <div className="flex flex-col h-full">
-            <div className="p-6 space-y-6">
+            {/* Sidebar Header */}
+            <div className="p-4 border-b border-border/40">
+              <div className="flex items-center justify-between">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                  className="h-8 w-8"
+                >
+                  {sidebarCollapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
+                </Button>
+              </div>
+            </div>
+
+            <div className={`p-4 space-y-6 ${sidebarCollapsed ? 'hidden' : 'block'}`}>
               {/* Navigation */}
               <nav className="space-y-2">
                 {navigationItems.map((item) => {
@@ -170,16 +192,47 @@ const DashboardLayout = ({ children, activeTab = "dashboard", onTabChange }: Das
                 </CardContent>
               </Card>
             </div>
-          </div>
-        </aside>
 
-        {/* Main Content */}
-        <main className="flex-1 min-h-[calc(100vh-4rem)]">
-          <div className="container mx-auto px-4 lg:px-6 py-6">
-            {children}
+            {/* Collapsed Sidebar Icons */}
+            {sidebarCollapsed && (
+              <div className="p-2 space-y-2">
+                {navigationItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = activeTab === item.id;
+                  
+                  return (
+                    <Button
+                      key={item.id}
+                      variant={isActive ? "secondary" : "ghost"}
+                      size="icon"
+                      className={`w-full h-10 ${
+                        isActive 
+                          ? "bg-gradient-subtle border border-white/10 shadow-card" 
+                          : "hover:bg-muted/50"
+                      }`}
+                      onClick={() => handleNavigation(item.id)}
+                      title={item.label}
+                    >
+                      <Icon className={`h-4 w-4 ${isActive ? "text-primary" : ""}`} />
+                    </Button>
+                  );
+                })}
+              </div>
+            )}
           </div>
-        </main>
-      </div>
+        </ResizablePanel>
+
+        <ResizableHandle withHandle />
+
+        {/* Main Content Panel */}
+        <ResizablePanel defaultSize={80} minSize={50}>
+          <div className="h-full overflow-auto">
+            <div className="container mx-auto px-4 lg:px-6 py-6">
+              {children}
+            </div>
+          </div>
+        </ResizablePanel>
+      </ResizablePanelGroup>
 
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
