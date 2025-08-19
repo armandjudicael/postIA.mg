@@ -121,12 +121,12 @@ const DashboardLayout = ({ children, activeTab = "dashboard", onTabChange }: Das
       <ResizablePanelGroup direction="horizontal" className="min-h-[calc(100vh-4rem)]">
         {/* Sidebar Panel */}
         <ResizablePanel 
-          defaultSize={20} 
-          minSize={15} 
-          maxSize={35}
+          defaultSize={sidebarCollapsed ? 5 : 20} 
+          minSize={sidebarCollapsed ? 5 : 15} 
+          maxSize={sidebarCollapsed ? 5 : 35}
           className={`
             ${sidebarOpen || window.innerWidth >= 1024 ? 'block' : 'hidden lg:block'}
-            bg-background/95 backdrop-blur border-r border-border/40
+            bg-background/95 backdrop-blur border-r border-border/40 transition-all duration-300
           `}
         >
           <div className="flex flex-col h-full">
@@ -195,26 +195,35 @@ const DashboardLayout = ({ children, activeTab = "dashboard", onTabChange }: Das
 
             {/* Collapsed Sidebar Icons */}
             {sidebarCollapsed && (
-              <div className="p-2 space-y-2">
+              <div className="p-2 space-y-3 flex-1">
                 {navigationItems.map((item) => {
                   const Icon = item.icon;
                   const isActive = activeTab === item.id;
                   
                   return (
-                    <Button
-                      key={item.id}
-                      variant={isActive ? "secondary" : "ghost"}
-                      size="icon"
-                      className={`w-full h-10 ${
-                        isActive 
-                          ? "bg-gradient-subtle border border-white/10 shadow-card" 
-                          : "hover:bg-muted/50"
-                      }`}
-                      onClick={() => handleNavigation(item.id)}
-                      title={item.label}
-                    >
-                      <Icon className={`h-4 w-4 ${isActive ? "text-primary" : ""}`} />
-                    </Button>
+                    <div key={item.id} className="relative group">
+                      <Button
+                        variant={isActive ? "secondary" : "ghost"}
+                        size="icon"
+                        className={`w-full h-12 relative ${
+                          isActive 
+                            ? "bg-gradient-subtle border border-white/10 shadow-card" 
+                            : "hover:bg-muted/50"
+                        }`}
+                        onClick={() => handleNavigation(item.id)}
+                      >
+                        <Icon className={`h-5 w-5 ${isActive ? "text-primary" : ""}`} />
+                      </Button>
+                      
+                      {/* Tooltip */}
+                      <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 
+                                    bg-popover text-popover-foreground px-2 py-1 rounded-md text-sm 
+                                    opacity-0 invisible group-hover:opacity-100 group-hover:visible 
+                                    transition-all duration-200 pointer-events-none z-50 whitespace-nowrap
+                                    shadow-lg border border-border">
+                        {item.label}
+                      </div>
+                    </div>
                   );
                 })}
               </div>

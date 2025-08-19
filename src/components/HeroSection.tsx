@@ -86,7 +86,14 @@ const HeroSection = () => {
                 Watch Demo
               </Button>
 
-              <Button variant="glass" size="lg">
+              <Button 
+                variant="glass" 
+                size="lg"
+                onClick={() => {
+                  const mobileSection = document.getElementById('mobile-app-section');
+                  mobileSection?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              >
                 <Smartphone className="mr-2 h-4 w-4" />
                 Download App
               </Button>

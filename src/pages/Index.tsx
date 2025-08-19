@@ -33,6 +33,9 @@ const Index = () => {
         <FeaturesSection />
         <PostBuilder />
         <TestimonialsSection />
+        <div id="mobile-app-section">
+          <MobileAppSection />
+        </div>
       </main>
       <Footer />
     </div>

@@ -53,12 +53,15 @@ import {
   History,
   Zap
 } from "lucide-react";
+import { toast } from "sonner";
 
 import AuthModal from "@/components/AuthModal";
 import { useAuth } from "@/hooks/useAuth";
 import VoiceRecorder from "@/components/VoiceRecorder";
 import MediaLibrary from "@/components/MediaLibrary";
 import PreviewPanel from "@/components/PreviewPanel";
+import MultimodalContent from "@/components/MultimodalContent";
+import VoiceInteraction from "@/components/VoiceInteraction";
 
 const PostStudio = () => {
   const { isAuthenticated } = useAuth();
@@ -203,10 +206,11 @@ const PostStudio = () => {
                     {/* Tool Panel Header */}
                     <div className="p-4 border-b border-border/50">
                       <Tabs value={activeToolPanel} onValueChange={setActiveToolPanel}>
-                        <TabsList className="grid w-full grid-cols-3 h-8">
-                          <TabsTrigger value="ai-tools" className="text-xs">AI Tools</TabsTrigger>
+                        <TabsList className="grid w-full grid-cols-4 h-8">
+                          <TabsTrigger value="ai-tools" className="text-xs">AI</TabsTrigger>
                           <TabsTrigger value="media" className="text-xs">Media</TabsTrigger>
                           <TabsTrigger value="voice" className="text-xs">Voice</TabsTrigger>
+                          <TabsTrigger value="multimodal" className="text-xs">Multi</TabsTrigger>
                         </TabsList>
                       </Tabs>
                     </div>
@@ -344,13 +348,28 @@ const PostStudio = () => {
 
                         {/* Voice Panel */}
                         <TabsContent value="voice" className="mt-0">
-                          {contentType === "voice" && (
-                            <VoiceRecorder 
-                              isRecording={isRecording}
-                              onToggleRecording={handleVoiceRecord}
-                              onTextGenerated={setVoiceText}
-                            />
-                          )}
+                          <VoiceInteraction 
+                            onContentUpdate={setContent}
+                            onActionExecuted={(action, data) => {
+                              if (action === 'schedule') {
+                                // Handle scheduling
+                                toast.success("Post scheduled via voice command");
+                              } else if (action === 'publish') {
+                                // Handle publishing
+                                toast.success("Post published via voice command");
+                              }
+                            }}
+                          />
+                        </TabsContent>
+
+                        {/* Multimodal Panel */}
+                        <TabsContent value="multimodal" className="mt-0">
+                          <MultimodalContent 
+                            onMediaUpdate={(media) => {
+                              setSelectedMedia(media.map(m => m.id));
+                              toast.success(`Updated with ${media.length} media files`);
+                            }}
+                          />
                         </TabsContent>
                       </Tabs>
                     </div>
