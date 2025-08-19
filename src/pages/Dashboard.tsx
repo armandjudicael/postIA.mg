@@ -116,9 +116,13 @@ const Dashboard = () => {
                     <Plus className="h-4 w-4 mr-2" />
                     Create New Post
                   </Button>
-                  <Button variant="outline" className="border-white/20 text-white hover:bg-white/10">
+                  <Button variant="outline" className="border-white/20 text-white hover:bg-white/10" onClick={() => setActiveTab("schedule")}>
                     <Calendar className="h-4 w-4 mr-2" />
                     Schedule Posts
+                  </Button>
+                  <Button variant="hero" className="bg-gradient-primary hover:opacity-90 text-white shadow-elegant">
+                    <Zap className="h-4 w-4 mr-2" />
+                    Publish Now
                   </Button>
                 </div>
               </CardContent>
