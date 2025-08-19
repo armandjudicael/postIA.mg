@@ -3,7 +3,9 @@ import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import FeaturesSection from "@/components/FeaturesSection";
-import PostEditor from "@/components/PostEditor";
+import PostBuilder from "@/components/PostBuilder";
+import TestimonialsSection from "@/components/TestimonialsSection";
+import MobileAppSection from "@/components/MobileAppSection";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -29,7 +31,9 @@ const Index = () => {
       <main>
         <HeroSection />
         <FeaturesSection />
-        <PostEditor />
+        <PostBuilder />
+        <TestimonialsSection />
+        <MobileAppSection />
       </main>
       <Footer />
     </div>

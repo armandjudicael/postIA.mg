@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Progress } from "@/components/ui/progress";
 import { 
   Sparkles, 
   RefreshCw, 
@@ -18,17 +19,29 @@ import {
   Facebook,
   Linkedin,
   Eye,
-  Wand2
+  Wand2,
+  Video,
+  FileText,
+  BarChart3,
+  CheckCircle,
+  Palette,
+  Target,
+  Globe,
+  Camera
 } from "lucide-react";
 
 import AuthModal from "@/components/AuthModal";
 import { useAuth } from "@/hooks/useAuth";
 
-const PostEditor = () => {
+const PostBuilder = () => {
   const { isAuthenticated } = useAuth();
   const [content, setContent] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [tone, setTone] = useState("professional");
+  const [platform, setPlatform] = useState("multi");
+  const [contentType, setContentType] = useState("post");
+  const [aiProgress, setAiProgress] = useState(0);
+  const [generatedImage, setGeneratedImage] = useState("");
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const handleGenerate = async () => {
@@ -38,11 +51,34 @@ const PostEditor = () => {
     }
 
     setIsGenerating(true);
-    // Simulate AI generation
+    setAiProgress(0);
+    
+    // Simulate AI generation with progress
+    const progressInterval = setInterval(() => {
+      setAiProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(progressInterval);
+          return 100;
+        }
+        return prev + 10;
+      });
+    }, 200);
+
     setTimeout(() => {
       setContent("🚀 Exciting news! We're revolutionizing social media content creation with AI-powered tools that help you craft engaging posts in seconds. \n\n✨ Key benefits:\n• Save 5+ hours per week\n• Increase engagement by 95%\n• Multi-platform optimization\n• Brand consistency guaranteed\n\nReady to transform your social media game? 💪\n\n#SocialMedia #AI #ContentCreation #Marketing #Innovation");
       setIsGenerating(false);
-    }, 2000);
+      setAiProgress(0);
+    }, 2500);
+  };
+
+  const handleGenerateImage = async () => {
+    if (!isAuthenticated) {
+      setIsAuthModalOpen(true);
+      return;
+    }
+    
+    // Simulate AI image generation
+    setGeneratedImage("https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=400&fit=crop");
   };
 
   return (
@@ -63,29 +99,60 @@ const PostEditor = () => {
                 </div>
               </div>
             </div>
-            <h2 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-4">
-              AI-Powered Post Creator
+            <h2 className="text-3xl font-bold text-gradient-primary mb-4">
+              AI-Powered Post Builder
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Experience the power of AI content generation. Create engaging posts for all your social media platforms in seconds.
+              Build engaging content with advanced AI tools. Generate text, create images, preview across platforms, and schedule with analytics insights.
             </p>
           </div>
 
           <div className="max-w-6xl mx-auto">
             <div className="grid lg:grid-cols-2 gap-8">
               {/* Editor Panel */}
-              <Card className="shadow-elegant">
+              <Card className="shadow-elegant bg-gradient-card">
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between">
-                    <span>Content Editor</span>
-                    <Badge variant="secondary">AI-Powered</Badge>
+                    <div className="flex items-center space-x-2">
+                      <Wand2 className="h-5 w-5 text-primary" />
+                      <span>Post Builder</span>
+                    </div>
+                    <Badge variant="secondary" className="bg-primary/10 text-primary">
+                      <Sparkles className="h-3 w-3 mr-1" />
+                      AI-Enhanced
+                    </Badge>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  {/* AI Settings */}
+                  {/* Content Type Selection */}
+                  <div className="space-y-2">
+                    <Label>Content Type</Label>
+                    <Tabs value={contentType} onValueChange={setContentType} className="w-full">
+                      <TabsList className="grid w-full grid-cols-4">
+                        <TabsTrigger value="post" className="text-xs">
+                          <FileText className="h-3 w-3 mr-1" />
+                          Post
+                        </TabsTrigger>
+                        <TabsTrigger value="story" className="text-xs">
+                          <Camera className="h-3 w-3 mr-1" />
+                          Story
+                        </TabsTrigger>
+                        <TabsTrigger value="video" className="text-xs">
+                          <Video className="h-3 w-3 mr-1" />
+                          Video
+                        </TabsTrigger>
+                        <TabsTrigger value="article" className="text-xs">
+                          <FileText className="h-3 w-3 mr-1" />
+                          Article
+                        </TabsTrigger>
+                      </TabsList>
+                    </Tabs>
+                  </div>
+
+                  {/* Enhanced AI Settings */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="tone">Tone</Label>
+                      <Label htmlFor="tone">Tone & Style</Label>
                       <Select value={tone} onValueChange={setTone}>
                         <SelectTrigger>
                           <SelectValue />
@@ -95,13 +162,14 @@ const PostEditor = () => {
                           <SelectItem value="friendly">Friendly</SelectItem>
                           <SelectItem value="humorous">Humorous</SelectItem>
                           <SelectItem value="inspiring">Inspiring</SelectItem>
+                          <SelectItem value="educational">Educational</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="platform">Platform</Label>
-                      <Select defaultValue="multi">
+                      <Label htmlFor="platform">Target Platform</Label>
+                      <Select value={platform} onValueChange={setPlatform}>
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
@@ -118,33 +186,45 @@ const PostEditor = () => {
 
                   {/* Topic Input */}
                   <div className="space-y-2">
-                    <Label htmlFor="topic">Topic or Keywords</Label>
+                    <Label htmlFor="topic">Topic, Keywords, or Prompt</Label>
                     <Input 
                       id="topic"
-                      placeholder="e.g. AI tools, social media marketing, productivity"
-                      defaultValue="AI-powered social media tools"
+                      placeholder="e.g. Launch new AI product, celebrate team milestone, share productivity tips"
+                      defaultValue="AI-powered social media automation tools"
+                      className="bg-background/50"
                     />
                   </div>
 
-                  {/* Generate Button */}
-                  <Button 
-                    onClick={handleGenerate}
-                    disabled={isGenerating}
-                    className="w-full"
-                    variant="default"
-                  >
-                    {isGenerating ? (
-                      <>
-                        <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                        Generating...
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles className="h-4 w-4 mr-2" />
-                        Generate AI Content
-                      </>
+                  {/* AI Generation */}
+                  <div className="space-y-3">
+                    <Button 
+                      onClick={handleGenerate}
+                      disabled={isGenerating}
+                      className="w-full btn-gradient btn-glow"
+                      size="lg"
+                    >
+                      {isGenerating ? (
+                        <>
+                          <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                          AI is Writing...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="h-4 w-4 mr-2" />
+                          Generate AI Content
+                        </>
+                      )}
+                    </Button>
+                    
+                    {isGenerating && (
+                      <div className="space-y-2">
+                        <Progress value={aiProgress} className="h-2" />
+                        <p className="text-xs text-muted-foreground text-center">
+                          AI is analyzing tone, platform requirements, and generating content...
+                        </p>
+                      </div>
                     )}
-                  </Button>
+                  </div>
 
                   {/* Content Editor */}
                   <div className="space-y-2">
@@ -161,17 +241,21 @@ const PostEditor = () => {
                     </div>
                   </div>
 
-                  {/* Action Buttons */}
-                  <div className="flex gap-3">
-                    <Button variant="secondary" className="flex-1">
-                      <ImageIcon className="h-4 w-4 mr-2" />
-                      Add AI Image
+                  {/* Enhanced Action Buttons */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <Button variant="secondary" onClick={handleGenerateImage} className="hover-lift">
+                      <Palette className="h-4 w-4 mr-2" />
+                      AI Image
                     </Button>
-                    <Button variant="outline" className="flex-1">
+                    <Button variant="outline" className="hover-lift">
+                      <Video className="h-4 w-4 mr-2" />
+                      Add Video
+                    </Button>
+                    <Button variant="outline" className="hover-lift">
                       <Calendar className="h-4 w-4 mr-2" />
                       Schedule
                     </Button>
-                    <Button variant="accent" className="flex-1">
+                    <Button variant="default" className="hover-lift">
                       <Send className="h-4 w-4 mr-2" />
                       Publish
                     </Button>
@@ -179,12 +263,18 @@ const PostEditor = () => {
                 </CardContent>
               </Card>
 
-              {/* Preview Panel */}
-              <Card className="shadow-elegant">
+              {/* Enhanced Preview Panel */}
+              <Card className="shadow-elegant bg-gradient-card">
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between">
-                    <span>Live Preview</span>
-                    <Eye className="h-4 w-4" />
+                    <div className="flex items-center space-x-2">
+                      <Eye className="h-5 w-5 text-primary" />
+                      <span>Cross-Platform Preview</span>
+                    </div>
+                    <Badge variant="outline" className="text-xs">
+                      <CheckCircle className="h-3 w-3 mr-1" />
+                      Optimized
+                    </Badge>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -287,4 +377,4 @@ const PostEditor = () => {
   );
 };
 
-export default PostEditor;
+export default PostBuilder;
