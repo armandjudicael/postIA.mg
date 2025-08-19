@@ -5,6 +5,7 @@ import PlatformConnections from "@/components/PlatformConnections";
 import PostStudio from "@/components/PostStudio";
 import ScheduleManager from "@/components/ScheduleManager";
 import PublishManager from "@/components/PublishManager";
+import BillingDashboard from "@/components/BillingDashboard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -73,19 +74,7 @@ const Dashboard = () => {
           </div>
         );
       case "billing":
-        return (
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">
-                Billing & Credits
-              </h2>
-              <p className="text-muted-foreground mb-6">
-                Manage your subscription and AI credits usage.
-              </p>
-            </div>
-            <PublishManager />
-          </div>
-        );
+        return <BillingDashboard />;
       case "settings":
         return (
           <div className="space-y-6">
