@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,11 +10,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { 
   Sparkles, 
   RefreshCw, 
-  Calendar, 
-  Send, 
+  Calendar as CalendarIcon, 
+  Send,
   Image as ImageIcon,
   Instagram,
   Twitter,
@@ -59,9 +64,10 @@ import AuthModal from "@/components/AuthModal";
 import { useAuth } from "@/hooks/useAuth";
 import VoiceRecorder from "@/components/VoiceRecorder";
 import MediaLibrary from "@/components/MediaLibrary";
-import PreviewPanel from "@/components/PreviewPanel";
+import EnhancedPreviewPanel from "@/components/EnhancedPreviewPanel";
 import MultimodalContent from "@/components/MultimodalContent";
 import VoiceInteraction from "@/components/VoiceInteraction";
+import SmartPublishButton from "@/components/SmartPublishButton";
 
 const PostStudio = () => {
   const { isAuthenticated } = useAuth();
@@ -83,6 +89,82 @@ const PostStudio = () => {
   const [rightPanelOpen, setRightPanelOpen] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeToolPanel, setActiveToolPanel] = useState("ai-tools");
+  
+  // Enhanced publish state
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [publishStatus, setPublishStatus] = useState<'draft' | 'published' | 'scheduled' | 'error'>('draft');
+  const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>(['instagram']);
+  const [publishError, setPublishError] = useState("");
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  
+  // Undo/Redo functionality
+  const [contentHistory, setContentHistory] = useState<string[]>([""])
+  const [historyIndex, setHistoryIndex] = useState(0);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  
+  // Auto-save functionality
+  const autoSaveRef = useRef<NodeJS.Timeout | null>(null);
+  const isDragOverRef = useRef(false);
+
+  // Auto-save content
+  const autoSave = useCallback(() => {
+    if (content.trim()) {
+      setLastSaved(new Date());
+      localStorage.setItem('postStudio_draft', JSON.stringify({
+        content,
+        contentType,
+        selectedMedia,
+        platform,
+        tone,
+        timestamp: new Date().toISOString()
+      }));
+    }
+  }, [content, contentType, selectedMedia, platform, tone]);
+
+  // Content history management
+  const addToHistory = useCallback((newContent: string) => {
+    const newHistory = [...contentHistory.slice(0, historyIndex + 1), newContent];
+    setContentHistory(newHistory);
+    setHistoryIndex(newHistory.length - 1);
+  }, [contentHistory, historyIndex]);
+
+  const undo = useCallback(() => {
+    if (historyIndex > 0) {
+      setHistoryIndex(historyIndex - 1);
+      setContent(contentHistory[historyIndex - 1]);
+    }
+  }, [historyIndex, contentHistory]);
+
+  const redo = useCallback(() => {
+    if (historyIndex < contentHistory.length - 1) {
+      setHistoryIndex(historyIndex + 1);
+      setContent(contentHistory[historyIndex + 1]);
+    }
+  }, [historyIndex, contentHistory]);
+
+  // Validation logic
+  const validatePost = useCallback(() => {
+    const errors: string[] = [];
+    
+    if (!content.trim()) {
+      errors.push("Content is required");
+    }
+    
+    if (content.length > 2200) {
+      errors.push("Content exceeds maximum length for selected platforms");
+    }
+    
+    if (selectedPlatforms.includes('twitter') && content.length > 280) {
+      errors.push("Content too long for Twitter (280 characters max)");
+    }
+    
+    if (selectedPlatforms.includes('instagram') && selectedMedia.length === 0 && contentType === 'image') {
+      errors.push("Instagram posts require media");
+    }
+    
+    setValidationErrors(errors);
+    return errors.length === 0;
+  }, [content, selectedPlatforms, selectedMedia, contentType]);
 
   const handleGenerate = async () => {
     if (!isAuthenticated) {
@@ -104,11 +186,111 @@ const PostStudio = () => {
     }, 200);
 
     setTimeout(() => {
-      setContent("🚀 Exciting news! We're revolutionizing social media content creation with AI-powered tools that help you craft engaging posts in seconds. \n\n✨ Key benefits:\n• Save 5+ hours per week\n• Increase engagement by 95%\n• Multi-platform optimization\n• Brand consistency guaranteed\n\nReady to transform your social media game? 💪\n\n#SocialMedia #AI #ContentCreation #Marketing #Innovation");
+      const newContent = "🚀 Exciting news! We're revolutionizing social media content creation with AI-powered tools that help you craft engaging posts in seconds. \n\n✨ Key benefits:\n• Save 5+ hours per week\n• Increase engagement by 95%\n• Multi-platform optimization\n• Brand consistency guaranteed\n\nReady to transform your social media game? 💪\n\n#SocialMedia #AI #ContentCreation #Marketing #Innovation";
+      setContent(newContent);
+      addToHistory(newContent);
       setIsGenerating(false);
       setAiProgress(0);
     }, 2500);
   };
+
+  const handlePublishNow = async () => {
+    if (!validatePost()) {
+      return;
+    }
+
+    setIsPublishing(true);
+    setPublishError("");
+    
+    try {
+      // Simulate publishing to selected platforms
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      setPublishStatus('published');
+      toast.success(`Published to ${selectedPlatforms.join(', ')} successfully!`);
+      
+      // Clear form after successful publish
+      setTimeout(() => {
+        setContent("");
+        setSelectedMedia([]);
+        setPublishStatus('draft');
+      }, 2000);
+      
+    } catch (error) {
+      setPublishStatus('error');
+      setPublishError("Failed to publish. Please try again.");
+      toast.error("Publishing failed");
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
+  // Load draft on mount
+  useEffect(() => {
+    const savedDraft = localStorage.getItem('postStudio_draft');
+    if (savedDraft) {
+      try {
+        const draft = JSON.parse(savedDraft);
+        setContent(draft.content || "");
+        setContentType(draft.contentType || "text");
+        setSelectedMedia(draft.selectedMedia || []);
+        setPlatform(draft.platform || "multi");
+        setTone(draft.tone || "professional");
+        addToHistory(draft.content || "");
+      } catch (error) {
+        console.warn('Failed to load draft:', error);
+      }
+    }
+  }, [addToHistory]);
+
+  // Auto-save with debounce
+  useEffect(() => {
+    if (autoSaveRef.current) {
+      clearTimeout(autoSaveRef.current);
+    }
+    
+    autoSaveRef.current = setTimeout(() => {
+      autoSave();
+    }, 3000); // Auto-save after 3 seconds of inactivity
+
+    return () => {
+      if (autoSaveRef.current) {
+        clearTimeout(autoSaveRef.current);
+      }
+    };
+  }, [autoSave]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey)) {
+        switch (e.key) {
+          case 'z':
+            if (e.shiftKey) {
+              e.preventDefault();
+              redo();
+            } else {
+              e.preventDefault();
+              undo();
+            }
+            break;
+          case 's':
+            e.preventDefault();
+            autoSave();
+            break;
+          case 'Enter':
+            if (e.shiftKey) {
+              e.preventDefault();
+              handlePublishNow();
+            }
+            break;
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [undo, redo, autoSave, handlePublishNow]);
 
   const handleVoiceRecord = () => {
     setIsRecording(!isRecording);
@@ -481,7 +663,7 @@ const PostStudio = () => {
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2">
-                            <Calendar className="h-4 w-4 text-muted-foreground" />
+                            <CalendarIcon className="h-4 w-4 text-muted-foreground" />
                             <Input 
                               type="datetime-local"
                               value={scheduleDate}
@@ -520,7 +702,7 @@ const PostStudio = () => {
                       </h3>
                     </div>
                     <div className="flex-1 overflow-auto">
-                      <PreviewPanel 
+                      <EnhancedPreviewPanel 
                         content={content || voiceText}
                         contentType={contentType}
                         selectedMedia={selectedMedia}
