@@ -2,7 +2,7 @@ import { useState } from "react";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import DashboardLayout from "@/components/DashboardLayout";
 import PlatformConnections from "@/components/PlatformConnections";
-import PostBuilder from "@/components/PostBuilder";
+import PostStudio from "@/components/PostStudio";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +25,7 @@ const Dashboard = () => {
   const renderContent = () => {
     switch (activeTab) {
       case "posts":
-        return <PostBuilder />;
+        return <PostStudio />;
       case "settings":
         return (
           <div className="space-y-6">

@@ -33,7 +33,7 @@ const DashboardLayout = ({ children, activeTab = "dashboard", onTabChange }: Das
 
   const navigationItems = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { id: "posts", label: "Content", icon: FileText },
+    { id: "posts", label: "Post Studio", icon: FileText },
     { id: "schedule", label: "Schedule", icon: Calendar },
     { id: "analytics", label: "Analytics", icon: BarChart3 },
     { id: "billing", label: "Billing", icon: CreditCard },
