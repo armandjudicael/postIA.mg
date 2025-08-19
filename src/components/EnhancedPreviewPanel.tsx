@@ -344,7 +344,9 @@ const EnhancedPreviewPanel = ({
                   View all {(engagement as any).comments || '0'} comments
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  {engagement.reach} accounts reached • {engagement.impressions} impressions
+                  {(engagement as any).reach && `${(engagement as any).reach} accounts reached`}
+                  {(engagement as any).reach && (engagement as any).impressions && ' • '}
+                  {(engagement as any).impressions && `${(engagement as any).impressions} impressions`}
                 </div>
               </div>
             </div>
@@ -396,15 +398,17 @@ const EnhancedPreviewPanel = ({
                            onClick={() => simulateInteraction('like')} />
                     <span className="text-xs">{parseInt(engagement.likes.replace('K', '000')) + mockInteractions.likes}</span>
                   </div>
-                  <div className="flex items-center space-x-1 cursor-pointer hover:text-primary transition-colors">
-                    <BarChart3 className="h-4 w-4" />
-                    <span className="text-xs">{engagement.impressions}</span>
-                  </div>
+                   <div className="flex items-center space-x-1 cursor-pointer hover:text-primary transition-colors">
+                     <BarChart3 className="h-4 w-4" />
+                     <span className="text-xs">{(engagement as any).impressions || '0'}</span>
+                   </div>
                 </div>
                 
                 {/* Platform-specific metrics */}
                 <div className="mt-2 text-xs text-muted-foreground">
-                  {engagement.impressions} impressions • {engagement.profileClicks} profile clicks
+                  {(engagement as any).impressions && `${(engagement as any).impressions} impressions`}
+                  {(engagement as any).impressions && (engagement as any).profileClicks && ' • '}
+                  {(engagement as any).profileClicks && `${(engagement as any).profileClicks} profile clicks`}
                 </div>
               </div>
             </div>
@@ -512,9 +516,9 @@ const EnhancedPreviewPanel = ({
               
               {/* Professional engagement metrics */}
               <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
-                <span>{engagement.impressions} impressions</span>
-                <span>{engagement.clicks} clicks</span>
-                <span>{engagement.followers} new followers</span>
+                <span>{(engagement as any).impressions || '0'} impressions</span>
+                <span>{(engagement as any).clicks || '0'} clicks</span>
+                <span>{(engagement as any).followers || '0'} new followers</span>
               </div>
             </div>
             
@@ -562,7 +566,7 @@ const EnhancedPreviewPanel = ({
                     {content.slice(0, 100) || "Your video title will appear here..."}
                   </h3>
                   <div className="text-xs text-muted-foreground mb-2">
-                    Your Channel • {parseInt(engagement.views.replace('K', '000')) + mockInteractions.views} views • 2 hours ago
+                    Your Channel • {parseInt(((engagement as any).views || '0').replace('K', '000')) + mockInteractions.views} views • 2 hours ago
                   </div>
                   
                   <div className="flex items-center space-x-4 text-sm">
@@ -570,19 +574,19 @@ const EnhancedPreviewPanel = ({
                       <ThumbsUp className={`h-4 w-4 ${mockInteractions.likes > 0 ? 'text-primary' : ''}`} />
                       <span className="text-xs">{parseInt(engagement.likes.replace('K', '000')) + mockInteractions.likes}</span>
                     </div>
-                    <div className="flex items-center space-x-1">
-                      <MessageCircle className="h-4 w-4" />
-                      <span className="text-xs">{parseInt(engagement.comments) + mockInteractions.comments}</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <Share2 className="h-4 w-4" />
-                      <span className="text-xs">{engagement.shares}</span>
-                    </div>
+                     <div className="flex items-center space-x-1">
+                       <MessageCircle className="h-4 w-4" />
+                       <span className="text-xs">{parseInt((engagement as any).comments || '0') + mockInteractions.comments}</span>
+                     </div>
+                     <div className="flex items-center space-x-1">
+                       <Share2 className="h-4 w-4" />
+                       <span className="text-xs">{(engagement as any).shares || '0'}</span>
+                     </div>
                   </div>
                   
-                  <div className="mt-2 text-xs text-muted-foreground">
-                    {engagement.watchTime} total watch time • {engagement.clickthrough} CTR
-                  </div>
+                   <div className="mt-2 text-xs text-muted-foreground">
+                     {(engagement as any).watchTime || '0'} total watch time • {(engagement as any).clickthrough || '0%'} CTR
+                   </div>
                 </div>
               </div>
             </div>
