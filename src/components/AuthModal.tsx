@@ -169,7 +169,6 @@ const AuthModal = ({ isOpen, onClose, defaultTab = "login" }: AuthModalProps) =>
                   </span>
                 </div>
               </div>
-
               {/* Email Login */}
               <div className="space-y-4">
                 <div className="space-y-2">
@@ -186,7 +185,6 @@ const AuthModal = ({ isOpen, onClose, defaultTab = "login" }: AuthModalProps) =>
                     />
                   </div>
                 </div>
-
                 <div className="space-y-2">
                   <Label htmlFor="password">Password</Label>
                   <div className="relative">

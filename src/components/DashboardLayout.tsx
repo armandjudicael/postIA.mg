@@ -1,9 +1,8 @@
-import { useState, ReactNode } from "react";
+import { useState, ReactNode, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { 
   Sparkles, 
   LayoutDashboard, 
@@ -18,8 +17,8 @@ import {
   Menu,
   X,
   Zap,
-  PanelLeftOpen,
-  PanelLeftClose
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
@@ -34,6 +33,21 @@ const DashboardLayout = ({ children, activeTab = "dashboard", onTabChange }: Das
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+      if (window.innerWidth < 1024) {
+        setSidebarOpen(false);
+      }
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const navigationItems = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -46,39 +60,58 @@ const DashboardLayout = ({ children, activeTab = "dashboard", onTabChange }: Das
 
   const handleLogout = () => {
     logout();
+    toast.success("Logged out successfully");
   };
 
   const handleNavigation = (tabId: string) => {
     onTabChange?.(tabId);
-    setSidebarOpen(false);
+    if (isMobile) {
+      setSidebarOpen(false);
+    }
+  };
+
+  const toggleSidebar = () => {
+    if (isMobile) {
+      setSidebarOpen(!sidebarOpen);
+    } else {
+      setSidebarCollapsed(!sidebarCollapsed);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-subtle">
       {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-50 w-full border-b border-border bg-white/95 backdrop-blur-md shadow-sm">
         <div className="flex h-16 items-center justify-between px-4 lg:px-6">
           {/* Logo & Mobile Menu */}
           <div className="flex items-center space-x-4">
             <Button
               variant="ghost"
-              size="icon"
-              className="lg:hidden"
-              onClick={() => setSidebarOpen(!sidebarOpen)}
+              size="icon-sm"
+              onClick={toggleSidebar}
+              className="hover:bg-primary/10"
+              aria-label="Toggle sidebar"
             >
-              {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {isMobile ? (
+                sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />
+              ) : (
+                sidebarCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />
+              )}
             </Button>
             
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-3 group cursor-pointer">
               <div className="relative">
-                <Sparkles className="h-8 w-8 text-primary animate-pulse-glow" />
-                <div className="absolute inset-0 bg-gradient-primary rounded-full blur-sm opacity-50" />
+                <div className="absolute inset-0 bg-gradient-primary rounded-lg blur-md opacity-60 group-hover:opacity-80 transition-opacity" />
+                <div className="relative bg-white rounded-lg p-2 border border-primary/20 group-hover:border-primary/40 transition-all">
+                  <Sparkles className="h-6 w-6 text-primary animate-pulse-glow" />
+                </div>
               </div>
-              <div>
-                <h1 className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+              <div className="space-y-1">
+                <h1 className="text-xl font-bold text-gradient-primary group-hover:scale-105 transition-transform">
                   PostIA.mg
                 </h1>
-                <Badge variant="secondary" className="text-xs">
+                <Badge variant="outline" size="sm" className="text-[10px] border-primary/20 text-primary">
+                  <Sparkles className="h-2.5 w-2.5 mr-1" />
                   AI-Powered
                 </Badge>
               </div>
@@ -87,169 +120,182 @@ const DashboardLayout = ({ children, activeTab = "dashboard", onTabChange }: Das
 
           {/* User Menu */}
           <div className="flex items-center space-x-3">
-            <Card className="hidden sm:block bg-gradient-subtle border-white/10">
+            {/* Credits Card */}
+            <Card variant="outline" className="hidden sm:block border-primary/20 hover:border-primary/30 transition-colors">
               <CardContent className="p-3">
                 <div className="flex items-center space-x-3">
                   <div className="flex items-center space-x-2">
-                    <Zap className="h-4 w-4 text-ai-accent" />
-                    <span className="text-sm font-medium">Credits: 250</span>
+                    <Zap className="h-4 w-4 text-primary animate-pulse-glow" />
+                    <span className="text-sm font-medium text-foreground">Credits: 250</span>
                   </div>
                   <Separator orientation="vertical" className="h-4" />
-                  <Button variant="hero" size="sm">
+                  <Button variant="default" size="sm" className="bg-gradient-primary">
                     Upgrade
                   </Button>
                 </div>
               </CardContent>
             </Card>
             
-            <Button variant="ghost" size="icon" className="relative">
+            {/* Notifications */}
+            <Button 
+              variant="ghost" 
+              size="icon-sm" 
+              className="relative hover:bg-primary/10 focus-ring"
+              aria-label="Notifications"
+            >
               <Bell className="h-4 w-4" />
-              <span className="absolute -top-1 -right-1 h-3 w-3 bg-ai-accent rounded-full"></span>
+              <span className="absolute -top-1 -right-1 h-3 w-3 bg-gradient-primary rounded-full animate-pulse-glow">
+                <span className="sr-only">New notifications</span>
+              </span>
             </Button>
             
-            <Button variant="ghost" size="icon">
+            {/* User Profile */}
+            <Button 
+              variant="ghost" 
+              size="icon-sm"
+              className="hover:bg-primary/10 focus-ring"
+              aria-label="User profile"
+            >
               <User className="h-4 w-4" />
             </Button>
 
-            <Button variant="ghost" size="icon" onClick={handleLogout}>
+            {/* Logout */}
+            <Button 
+              variant="ghost" 
+              size="icon-sm" 
+              onClick={handleLogout}
+              className="hover:bg-destructive/10 hover:text-destructive focus-ring"
+              aria-label="Logout"
+            >
               <LogOut className="h-4 w-4" />
             </Button>
           </div>
         </div>
       </header>
 
-      <ResizablePanelGroup direction="horizontal" className="min-h-[calc(100vh-4rem)]">
-        {/* Sidebar Panel */}
-        <ResizablePanel 
-          defaultSize={sidebarCollapsed ? 5 : 20} 
-          minSize={sidebarCollapsed ? 5 : 15} 
-          maxSize={sidebarCollapsed ? 5 : 35}
+      <div className="flex">
+        {/* Sidebar */}
+        <aside 
           className={`
-            ${sidebarOpen || window.innerWidth >= 1024 ? 'block' : 'hidden lg:block'}
-            bg-background/95 backdrop-blur border-r border-border/40 transition-all duration-300
+            ${isMobile 
+              ? `fixed inset-y-0 left-0 z-40 transform transition-transform duration-300 ease-in-out ${
+                  sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+                }`
+              : `relative transition-all duration-300 ease-in-out ${
+                  sidebarCollapsed ? 'w-16' : 'w-64'
+                }`
+            }
+            bg-white border-r border-border shadow-sm flex flex-col
+            ${isMobile ? 'w-64' : ''}
           `}
         >
-          <div className="flex flex-col h-full">
-            {/* Sidebar Header */}
-            <div className="p-4 border-b border-border/40">
-              <div className="flex items-center justify-between">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                  className="h-8 w-8"
-                >
-                  {sidebarCollapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
-                </Button>
-              </div>
-            </div>
+          {/* Sidebar Content */}
+          <div className="flex-1 overflow-y-auto py-6">
+            <nav className="px-3 space-y-2">
+              {navigationItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = activeTab === item.id;
+                
+                return (
+                  <Button
+                    key={item.id}
+                    variant={isActive ? "default" : "ghost"}
+                    className={`
+                      w-full transition-all duration-200 
+                      ${sidebarCollapsed && !isMobile ? 'justify-center px-2' : 'justify-start'}
+                      ${isActive 
+                        ? "bg-gradient-primary text-primary-foreground shadow-button" 
+                        : "hover:bg-primary/10 hover:text-primary"
+                      }
+                    `}
+                    onClick={() => handleNavigation(item.id)}
+                    title={sidebarCollapsed && !isMobile ? item.label : undefined}
+                  >
+                    <Icon className={`h-5 w-5 ${isActive ? "text-primary-foreground" : ""} ${
+                      sidebarCollapsed && !isMobile ? '' : 'mr-3'
+                    }`} />
+                    {(!sidebarCollapsed || isMobile) && (
+                      <span className="font-medium">{item.label}</span>
+                    )}
+                  </Button>
+                );
+              })}
+            </nav>
 
-            <div className={`p-4 space-y-6 ${sidebarCollapsed ? 'hidden' : 'block'}`}>
-              {/* Navigation */}
-              <nav className="space-y-2">
-                {navigationItems.map((item) => {
-                  const Icon = item.icon;
-                  const isActive = activeTab === item.id;
-                  
-                  return (
-                    <Button
-                      key={item.id}
-                      variant={isActive ? "secondary" : "ghost"}
-                      className={`w-full justify-start transition-all duration-200 ${
-                        isActive 
-                          ? "bg-gradient-subtle border border-white/10 shadow-card" 
-                          : "hover:bg-muted/50"
-                      }`}
-                      onClick={() => handleNavigation(item.id)}
-                    >
-                      <Icon className={`h-4 w-4 mr-3 ${isActive ? "text-primary" : ""}`} />
-                      {item.label}
-                    </Button>
-                  );
-                })}
-              </nav>
-
-              {/* Quick Stats */}
-              <Card className="bg-gradient-subtle border-white/10">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium">Quick Stats</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-muted-foreground">Posts this month</span>
-                    <Badge variant="outline">24</Badge>
-                  </div>
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-muted-foreground">Engagement rate</span>
-                    <Badge variant="outline" className="text-ai-success border-ai-success/20">
-                      +12.5%
-                    </Badge>
-                  </div>
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-muted-foreground">AI Credits used</span>
-                    <Badge variant="outline">158/500</Badge>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Collapsed Sidebar Icons */}
-            {sidebarCollapsed && (
-              <div className="p-2 space-y-3 flex-1">
-                {navigationItems.map((item) => {
-                  const Icon = item.icon;
-                  const isActive = activeTab === item.id;
-                  
-                  return (
-                    <div key={item.id} className="relative group">
-                      <Button
-                        variant={isActive ? "secondary" : "ghost"}
-                        size="icon"
-                        className={`w-full h-12 relative ${
-                          isActive 
-                            ? "bg-gradient-subtle border border-white/10 shadow-card" 
-                            : "hover:bg-muted/50"
-                        }`}
-                        onClick={() => handleNavigation(item.id)}
-                      >
-                        <Icon className={`h-5 w-5 ${isActive ? "text-primary" : ""}`} />
-                      </Button>
-                      
-                      {/* Tooltip */}
-                      <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 
-                                    bg-popover text-popover-foreground px-2 py-1 rounded-md text-sm 
-                                    opacity-0 invisible group-hover:opacity-100 group-hover:visible 
-                                    transition-all duration-200 pointer-events-none z-50 whitespace-nowrap
-                                    shadow-lg border border-border">
-                        {item.label}
-                      </div>
+            {/* Quick Stats - Only show when not collapsed */}
+            {(!sidebarCollapsed || isMobile) && (
+              <div className="px-3 mt-6">
+                <Card variant="outline" className="border-primary/20">
+                  <CardContent className="p-4">
+                    <h4 className="font-medium text-sm text-foreground mb-3 flex items-center">
+                      <BarChart3 className="h-4 w-4 mr-2 text-primary" />
+                      Quick Stats
+                    </h4>
+                    <div className="space-y-3">
+                      {[
+                        { label: "Posts this month", value: "24", trend: "+12%" },
+                        { label: "Engagement rate", value: "12.5%", trend: "+2.1%" },
+                        { label: "AI Credits used", value: "158/500", trend: "68%" },
+                      ].map((stat, index) => (
+                        <div key={index} className="flex justify-between items-center text-sm">
+                          <span className="text-muted-foreground">{stat.label}</span>
+                          <div className="flex items-center space-x-2">
+                            <Badge variant="outline" size="sm" className="text-xs">
+                              {stat.value}
+                            </Badge>
+                            <Badge 
+                              variant="success" 
+                              size="sm" 
+                              className="text-xs bg-ai-success/10 text-ai-success border-ai-success/20"
+                            >
+                              {stat.trend}
+                            </Badge>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  );
-                })}
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+
+            {/* Upgrade Prompt - Only show when not collapsed */}
+            {(!sidebarCollapsed || isMobile) && (
+              <div className="px-3 mt-6">
+                <Card variant="gradient" className="bg-gradient-primary text-primary-foreground">
+                  <CardContent className="p-4 text-center space-y-3">
+                    <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mx-auto">
+                      <Sparkles className="h-6 w-6 text-primary-foreground animate-pulse-glow" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-sm">Upgrade to Pro</div>
+                      <div className="text-xs opacity-90">Unlock unlimited AI credits</div>
+                    </div>
+                    <Button variant="secondary" size="sm" className="w-full bg-white text-light-black hover:bg-white/90">
+                      Upgrade Now
+                    </Button>
+                  </CardContent>
+                </Card>
               </div>
             )}
           </div>
-        </ResizablePanel>
+        </aside>
 
-        <ResizableHandle withHandle />
+        {/* Mobile Sidebar Overlay */}
+        {isMobile && sidebarOpen && (
+          <div
+            className="fixed inset-0 z-30 bg-light-black/20 backdrop-blur-sm"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
 
-        {/* Main Content Panel */}
-        <ResizablePanel defaultSize={80} minSize={50}>
-          <div className="h-full overflow-auto">
-            <div className="container mx-auto px-4 lg:px-6 py-6">
-              {children}
-            </div>
+        {/* Main Content */}
+        <main className="flex-1 min-w-0">
+          <div className="p-6">
+            {children}
           </div>
-        </ResizablePanel>
-      </ResizablePanelGroup>
-
-      {/* Mobile Sidebar Overlay */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 z-30 bg-background/80 backdrop-blur-sm lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+        </main>
+      </div>
     </div>
   );
 };
