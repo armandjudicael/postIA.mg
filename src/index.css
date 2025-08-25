@@ -2,72 +2,72 @@
 @tailwind components;
 @tailwind utilities;
 
-/* PostIA.mg Design System - Light Black, Yellow & White Theme */
+/* PostIA.mg Design System - Dark Primary & Yellow Secondary Theme */
 
 @layer base {
   :root {
-    /* Light Black, Yellow & White Premium Theme - Light Mode */
+    /* Dark Primary & Yellow Secondary Theme - Light Mode */
     --background: 255 255 255;  /* Pure white */
-    --foreground: 64 64 64;     /* Light black */
+    --foreground: 15 23 42;     /* Dark slate 900 - primary dark */
 
     --card: 255 255 255;        /* Pure white */
-    --card-foreground: 64 64 64; /* Light black */
+    --card-foreground: 15 23 42; /* Dark slate 900 */
 
     --popover: 255 255 255;
-    --popover-foreground: 64 64 64;
+    --popover-foreground: 15 23 42;
 
-    /* Primary Colors: Light Black, Yellow, White */
-    --primary: 234 179 8;       /* Yellow 500 */
-    --primary-foreground: 64 64 64; /* Light black text on yellow */
-    --primary-glow: 250 204 21; /* Yellow 400 */
+    /* Primary Colors: Dark as Primary, Yellow as Secondary */
+    --primary: 15 23 42;        /* Dark slate 900 - primary */
+    --primary-foreground: 255 255 255; /* White text on dark */
+    --primary-glow: 30 41 59;   /* Slate 800 */
 
-    --secondary: 64 64 64;      /* Light black */
-    --secondary-foreground: 255 255 255; /* White text on light black */
+    --secondary: 234 179 8;     /* Yellow 500 - secondary */
+    --secondary-foreground: 15 23 42; /* Dark text on yellow */
 
     --muted: 248 250 252;       /* Very light gray */
-    --muted-foreground: 100 116 139; /* Medium gray */
+    --muted-foreground: 100 116 139; /* Slate 500 */
 
-    --accent: 245 158 11;       /* Amber 500 - complementary to yellow */
-    --accent-foreground: 64 64 64; /* Light black */
+    --accent: 245 158 11;       /* Amber 500 - complementary */
+    --accent-foreground: 15 23 42; /* Dark text */
 
     --destructive: 239 68 68;   /* Red 500 */
     --destructive-foreground: 255 255 255;
 
     --border: 226 232 240;      /* Light gray border */
     --input: 255 255 255;       /* White */
-    --ring: 234 179 8;          /* Yellow 500 */
+    --ring: 15 23 42;           /* Dark slate 900 */
 
     --radius: 0.75rem;
 
     /* AI Color Extensions */
-    --ai-primary: 234 179 8;    /* Yellow 500 */
-    --ai-secondary: 64 64 64;   /* Light black */
+    --ai-primary: 15 23 42;     /* Dark slate 900 */
+    --ai-secondary: 234 179 8;  /* Yellow 500 */
     --ai-accent: 245 158 11;    /* Amber 500 */
     --ai-success: 34 197 94;    /* Emerald 500 */
     --ai-warning: 251 191 36;   /* Amber 400 */
     --ai-error: 239 68 68;      /* Red 500 */
     --ai-info: 59 130 246;      /* Blue 500 */
 
-    /* Premium Gradients - Light Black, Yellow, White */
-    --gradient-primary: linear-gradient(135deg, rgb(234 179 8), rgb(250 204 21));
-    --gradient-secondary: linear-gradient(135deg, rgb(64 64 64), rgb(100 116 139));
+    /* Premium Gradients - Dark Primary, Yellow Secondary */
+    --gradient-primary: linear-gradient(135deg, rgb(15 23 42), rgb(30 41 59));
+    --gradient-secondary: linear-gradient(135deg, rgb(234 179 8), rgb(250 204 21));
     --gradient-accent: linear-gradient(135deg, rgb(245 158 11), rgb(217 119 6));
-    --gradient-hero: linear-gradient(135deg, rgb(234 179 8) 0%, rgb(250 204 21) 30%, rgb(245 158 11) 70%, rgb(64 64 64) 100%);
+    --gradient-hero: linear-gradient(135deg, rgb(15 23 42) 0%, rgb(30 41 59) 30%, rgb(234 179 8) 70%, rgb(250 204 21) 100%);
     --gradient-subtle: linear-gradient(180deg, rgb(255 255 255), rgb(248 250 252));
     --gradient-card: linear-gradient(145deg, rgb(255 255 255) 0%, rgb(248 250 252) 100%);
-    --gradient-light-black: linear-gradient(135deg, rgb(64 64 64), rgb(100 116 139));
+    --gradient-dark: linear-gradient(135deg, rgb(15 23 42), rgb(30 41 59));
     
     /* Glass Effect */
     --glass: rgba(255, 255, 255, 0.9);
-    --glass-border: rgba(234, 179, 8, 0.2);
+    --glass-border: rgba(15, 23, 42, 0.1);
 
     /* Shadows */
-    --shadow-elegant: 0 12px 35px -8px rgba(64, 64, 64, 0.15);
+    --shadow-elegant: 0 12px 35px -8px rgba(15, 23, 42, 0.15);
     --shadow-glow: 0 0 45px rgba(234, 179, 8, 0.3);
-    --shadow-card: 0 6px 25px -3px rgba(64, 64, 64, 0.08);
-    --shadow-button: 0 6px 15px -3px rgba(234, 179, 8, 0.25);
-    --shadow-modal: 0 30px 60px -15px rgba(64, 64, 64, 0.15);
-    --shadow-platform: 0 10px 30px -6px rgba(64, 64, 64, 0.12);
+    --shadow-card: 0 6px 25px -3px rgba(15, 23, 42, 0.08);
+    --shadow-button: 0 6px 15px -3px rgba(15, 23, 42, 0.2);
+    --shadow-modal: 0 30px 60px -15px rgba(15, 23, 42, 0.15);
+    --shadow-platform: 0 10px 30px -6px rgba(15, 23, 42, 0.12);
     
     /* Animation Variables */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -75,49 +75,49 @@
 
     /* Sidebar theme */
     --sidebar-background: 248 250 252;  /* Very light gray */
-    --sidebar-foreground: 64 64 64;     /* Light black */
-    --sidebar-primary: 234 179 8;       /* Yellow 500 */
-    --sidebar-primary-foreground: 64 64 64;
+    --sidebar-foreground: 15 23 42;     /* Dark slate 900 */
+    --sidebar-primary: 15 23 42;        /* Dark slate 900 */
+    --sidebar-primary-foreground: 255 255 255;
     --sidebar-accent: 241 245 249;      /* Light gray */
-    --sidebar-accent-foreground: 64 64 64;
+    --sidebar-accent-foreground: 15 23 42;
     --sidebar-border: 226 232 240;      /* Light gray border */
-    --sidebar-ring: 234 179 8;          /* Yellow 500 */
+    --sidebar-ring: 15 23 42;           /* Dark slate 900 */
   }
 
   .dark {
-    /* Dark Mode - Light Black dominant with Yellow accents */
-    --background: 64 64 64;         /* Light black background */
-    --foreground: 255 255 255;      /* White text */
+    /* Dark Mode - Dark Primary with Yellow Secondary accents */
+    --background: 15 23 42;         /* Dark slate 900 background */
+    --foreground: 248 250 252;      /* Light text */
 
-    --card: 82 82 91;               /* Slightly lighter than background */
-    --card-foreground: 255 255 255; /* White text */
+    --card: 30 41 59;               /* Slate 800 cards */
+    --card-foreground: 248 250 252; /* Light text */
 
-    --popover: 82 82 91;
-    --popover-foreground: 255 255 255;
+    --popover: 30 41 59;
+    --popover-foreground: 248 250 252;
 
-    --primary: 250 204 21;          /* Bright yellow for dark mode */
-    --primary-foreground: 64 64 64; /* Light black text on yellow */
-    --primary-glow: 234 179 8;      /* Yellow 500 */
+    --primary: 30 41 59;            /* Slate 800 for dark mode */
+    --primary-foreground: 248 250 252; /* Light text on dark */
+    --primary-glow: 51 65 85;       /* Slate 700 */
 
-    --secondary: 100 116 139;       /* Medium gray */
-    --secondary-foreground: 255 255 255; /* White text */
+    --secondary: 250 204 21;        /* Bright yellow for dark mode */
+    --secondary-foreground: 15 23 42; /* Dark text on yellow */
 
-    --muted: 100 116 139;           /* Medium gray */
-    --muted-foreground: 203 213 225; /* Light gray text */
+    --muted: 51 65 85;              /* Slate 700 */
+    --muted-foreground: 148 163 184; /* Slate 400 */
 
     --accent: 251 191 36;           /* Bright amber for dark mode */
-    --accent-foreground: 64 64 64;  /* Light black */
+    --accent-foreground: 15 23 42;  /* Dark text */
 
     --destructive: 248 113 113;     /* Softer red for dark mode */
-    --destructive-foreground: 255 255 255;
+    --destructive-foreground: 248 250 252;
 
-    --border: 100 116 139;          /* Medium gray borders */
-    --input: 82 82 91;              /* Slightly lighter input background */
+    --border: 51 65 85;             /* Slate 700 borders */
+    --input: 30 41 59;              /* Slate 800 input background */
     --ring: 250 204 21;             /* Bright yellow */
 
     /* Dark mode AI colors */
-    --ai-primary: 250 204 21;       /* Bright yellow */
-    --ai-secondary: 100 116 139;    /* Medium gray */
+    --ai-primary: 30 41 59;         /* Slate 800 */
+    --ai-secondary: 250 204 21;     /* Bright yellow */
     --ai-accent: 251 191 36;        /* Bright amber */
     --ai-success: 52 211 153;       /* Emerald 400 */
     --ai-warning: 251 191 36;       /* Bright amber */
@@ -125,15 +125,15 @@
     --ai-info: 96 165 250;          /* Blue 400 */
 
     /* Dark mode gradients */
-    --gradient-primary: linear-gradient(135deg, rgb(250 204 21), rgb(234 179 8));
-    --gradient-secondary: linear-gradient(135deg, rgb(100 116 139), rgb(64 64 64));
+    --gradient-primary: linear-gradient(135deg, rgb(30 41 59), rgb(51 65 85));
+    --gradient-secondary: linear-gradient(135deg, rgb(250 204 21), rgb(234 179 8));
     --gradient-accent: linear-gradient(135deg, rgb(251 191 36), rgb(245 158 11));
-    --gradient-hero: linear-gradient(135deg, rgb(250 204 21) 0%, rgb(234 179 8) 30%, rgb(251 191 36) 70%, rgb(100 116 139) 100%);
-    --gradient-subtle: linear-gradient(180deg, rgb(64 64 64), rgb(82 82 91));
-    --gradient-card: linear-gradient(145deg, rgb(82 82 91) 0%, rgb(64 64 64) 100%);
-    --gradient-light-black: linear-gradient(135deg, rgb(100 116 139), rgb(64 64 64));
+    --gradient-hero: linear-gradient(135deg, rgb(30 41 59) 0%, rgb(51 65 85) 30%, rgb(250 204 21) 70%, rgb(234 179 8) 100%);
+    --gradient-subtle: linear-gradient(180deg, rgb(15 23 42), rgb(30 41 59));
+    --gradient-card: linear-gradient(145deg, rgb(30 41 59) 0%, rgb(15 23 42) 100%);
+    --gradient-dark: linear-gradient(135deg, rgb(51 65 85), rgb(30 41 59));
 
-    --glass: rgba(64, 64, 64, 0.9);
+    --glass: rgba(15, 23, 42, 0.9);
     --glass-border: rgba(250, 204, 21, 0.2);
 
     /* Dark mode shadows */
@@ -145,13 +145,13 @@
     --shadow-platform: 0 10px 30px -6px rgba(0, 0, 0, 0.3);
 
     /* Dark sidebar */
-    --sidebar-background: 82 82 91;  /* Slightly lighter than main background */
-    --sidebar-foreground: 255 255 255;
-    --sidebar-primary: 250 204 21;   /* Bright yellow */
-    --sidebar-primary-foreground: 64 64 64;
-    --sidebar-accent: 100 116 139;   /* Medium gray */
-    --sidebar-accent-foreground: 255 255 255;
-    --sidebar-border: 113 113 122;   /* Lighter gray border */
+    --sidebar-background: 30 41 59;  /* Slate 800 */
+    --sidebar-foreground: 248 250 252;
+    --sidebar-primary: 30 41 59;     /* Slate 800 */
+    --sidebar-primary-foreground: 248 250 252;
+    --sidebar-accent: 51 65 85;      /* Slate 700 */
+    --sidebar-accent-foreground: 248 250 252;
+    --sidebar-border: 71 85 105;     /* Slate 600 */
     --sidebar-ring: 250 204 21;      /* Bright yellow */
   }
 }
@@ -178,7 +178,7 @@
   h5 { @apply text-lg lg:text-xl; }
   h6 { @apply text-base lg:text-lg; }
 
-  /* Custom utility classes for Light Black, Yellow, White theme */
+  /* Custom utility classes for Dark Primary, Yellow Secondary theme */
   .gradient-primary {
     background: var(--gradient-primary);
   }
@@ -203,8 +203,8 @@
     background: var(--gradient-card);
   }
 
-  .gradient-light-black {
-    background: var(--gradient-light-black);
+  .gradient-dark {
+    background: var(--gradient-dark);
   }
 
   .glass-effect {
@@ -247,8 +247,12 @@
     @apply bg-gradient-accent bg-clip-text text-transparent;
   }
 
-  .text-gradient-light-black {
-    @apply bg-gradient-light-black bg-clip-text text-transparent;
+  .text-gradient-secondary {
+    @apply bg-gradient-secondary bg-clip-text text-transparent;
+  }
+
+  .text-gradient-dark {
+    @apply bg-gradient-dark bg-clip-text text-transparent;
   }
 
   /* Button utilities */
@@ -266,31 +270,31 @@
   }
 
   /* Color-specific utilities */
-  .bg-light-black {
-    background-color: rgb(64 64 64);
+  .bg-dark-primary {
+    background-color: rgb(15 23 42);
   }
 
-  .text-light-black {
-    color: rgb(64 64 64);
+  .text-dark-primary {
+    color: rgb(15 23 42);
   }
 
-  .border-light-black {
-    border-color: rgb(64 64 64);
+  .border-dark-primary {
+    border-color: rgb(15 23 42);
   }
 
-  .bg-yellow-primary {
+  .bg-yellow-secondary {
     background-color: rgb(234 179 8);
   }
 
-  .text-yellow-primary {
+  .text-yellow-secondary {
     color: rgb(234 179 8);
   }
 
-  .border-yellow-primary {
+  .border-yellow-secondary {
     border-color: rgb(234 179 8);
   }
 
-  /* Animations with Light Black, Yellow, White theme */
+  /* Animations with Dark Primary, Yellow Secondary theme */
   @keyframes float {
     0%, 100% { transform: translateY(0px); }
     50% { transform: translateY(-10px); }
@@ -396,7 +400,7 @@
 
   /* Focus styles for accessibility */
   .focus-ring {
-    @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background;
+    @apply focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background;
   }
 
   /* Loading states */
@@ -432,15 +436,15 @@
   /* High contrast mode support */
   @media (prefers-contrast: high) {
     :root {
-      --primary: 234 179 8;
-      --secondary: 0 0 0;
-      --foreground: 0 0 0;
+      --primary: 15 23 42;
+      --secondary: 234 179 8;
+      --foreground: 15 23 42;
     }
     
     .dark {
-      --primary: 250 204 21;
-      --secondary: 255 255 255;
-      --foreground: 255 255 255;
+      --primary: 30 41 59;
+      --secondary: 250 204 21;
+      --foreground: 248 250 252;
     }
   }
 
