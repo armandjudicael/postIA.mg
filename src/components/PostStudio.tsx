@@ -9,6 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { 
   Sparkles, 
   RefreshCw, 
@@ -43,7 +45,14 @@ import {
   MessageSquare,
   Brain,
   Volume2,
-  VolumeX
+  VolumeX,
+  PanelLeft,
+  PanelRight,
+  Maximize,
+  Minimize,
+  GripVertical,
+  ExternalLink,
+  X
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -97,7 +106,6 @@ const PostStudio = () => {
   const [editingPost, setEditingPost] = useState<PostData | null>(null);
   const [isPublishing, setIsPublishing] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
-  const [activeTab, setActiveTab] = useState("create");
   const [darkMode, setDarkMode] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [voiceText, setVoiceText] = useState("");
@@ -107,6 +115,12 @@ const PostStudio = () => {
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [topicIdea, setTopicIdea] = useState("");
   const [enhancedPreview, setEnhancedPreview] = useState(false);
+  const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
+  const [isRightPanelCollapsed, setIsRightPanelCollapsed] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [activePanel, setActivePanel] = useState<'editor' | 'media' | 'ai'>('editor');
+  const [isPreviewDetached, setIsPreviewDetached] = useState(false);
+  const [isPreviewFullscreen, setIsPreviewFullscreen] = useState(false);
   
   // Auto-save functionality
   const autoSaveRef = useRef<NodeJS.Timeout | null>(null);
@@ -381,6 +395,29 @@ const PostStudio = () => {
     }
   };
 
+  const toggleLeftPanel = () => {
+    setIsLeftPanelCollapsed(!isLeftPanelCollapsed);
+  };
+
+  const toggleRightPanel = () => {
+    setIsRightPanelCollapsed(!isRightPanelCollapsed);
+  };
+
+  const toggleFullscreen = () => {
+    setIsFullscreen(!isFullscreen);
+  };
+
+  const togglePreviewDetached = () => {
+    setIsPreviewDetached(!isPreviewDetached);
+    if (isPreviewFullscreen) {
+      setIsPreviewFullscreen(false);
+    }
+  };
+
+  const togglePreviewFullscreen = () => {
+    setIsPreviewFullscreen(!isPreviewFullscreen);
+  };
+
   // Load draft on mount
   useEffect(() => {
     const savedDraft = localStorage.getItem('postStudio_draft');
@@ -457,7 +494,76 @@ const PostStudio = () => {
     );
   }
 
-  // Render Studio View
+  // Render Detached Preview
+  const PreviewWindow = () => (
+    <div className={`${isPreviewFullscreen ? 'fixed inset-0 z-50 bg-background' : 'fixed right-4 bottom-4 w-[400px] h-[600px] z-40 shadow-xl rounded-lg border border-border bg-card overflow-hidden'}`}>
+      <div className="h-full flex flex-col">
+        <div className="p-3 border-b flex items-center justify-between bg-muted/30">
+          <h2 className="text-base font-medium flex items-center">
+            <Eye className="h-4 w-4 mr-2 text-primary" />
+            Preview
+          </h2>
+          <div className="flex items-center space-x-1">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    className="h-7 w-7"
+                    onClick={togglePreviewFullscreen}
+                  >
+                    {isPreviewFullscreen ? <Minimize className="h-3.5 w-3.5" /> : <Maximize className="h-3.5 w-3.5" />}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {isPreviewFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    className="h-7 w-7"
+                    onClick={togglePreviewDetached}
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  Close
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+        </div>
+        
+        <div className="flex-1 p-3 overflow-auto">
+          {enhancedPreview ? (
+            <EnhancedPreviewPanel 
+              content={content}
+              contentType={contentType}
+              selectedMedia={selectedMedia}
+              platform={platform}
+              isResizable={false}
+              onError={(error) => toast.error(error)}
+              onSuccess={(message) => toast.success(message)}
+            />
+          ) : (
+            <PreviewPanel 
+              content={content}
+              platform={platform}
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Render Studio View with 3-panel layout
   return (
     <>
       <AuthModal 
@@ -466,7 +572,7 @@ const PostStudio = () => {
         defaultTab="signup"
       />
       
-      <div className={`min-h-screen bg-gradient-subtle ${darkMode ? 'dark' : ''}`}>
+      <div className={`h-full min-h-screen flex flex-col bg-gradient-subtle ${darkMode ? 'dark' : ''}`}>
         {/* Studio Header */}
         <div className="bg-white border-b border-border sticky top-0 z-10">
           <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -520,6 +626,22 @@ const PostStudio = () => {
                 <History className="h-4 w-4 mr-2" />
                 History
               </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      variant="outline" 
+                      size="icon"
+                      onClick={toggleFullscreen}
+                    >
+                      {isFullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
               {lastSaved && (
                 <Badge variant="outline" className="text-xs hidden sm:flex">
                   <Save className="h-3 w-3 mr-1" />
@@ -530,105 +652,126 @@ const PostStudio = () => {
           </div>
         </div>
 
-        {/* Progress Steps */}
-        <div className="bg-white border-b border-border">
-          <div className="container mx-auto px-4 py-2">
-            <div className="flex items-center justify-center space-x-4">
-              {['Create', 'Media', 'Preview', 'Schedule', 'Publish'].map((step, index) => (
-                <div key={step} className="flex items-center">
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
-                    index <= (activeTab === 'create' ? 0 : activeTab === 'preview' ? 2 : 0) 
-                      ? 'bg-primary text-primary-foreground' 
-                      : 'bg-muted text-muted-foreground'
-                  }`}>
-                    {index + 1}
-                  </div>
-                  <span className="ml-2 text-xs font-medium hidden sm:inline">{step}</span>
-                  {index < 4 && <div className="w-8 h-px bg-border ml-4 hidden sm:block" />}
+        {/* Main Content - 3-Panel Layout */}
+        <div className={`container mx-auto px-4 py-6 flex-1 flex flex-col ${isFullscreen ? 'fixed inset-0 z-50 bg-background p-4' : ''}`}>
+          <ResizablePanelGroup direction="horizontal" className="h-full min-h-[calc(100vh-12rem)] rounded-lg border">
+            {/* Left Panel - Content Creation */}
+            <ResizablePanel 
+              defaultSize={25} 
+              minSize={15}
+              maxSize={40}
+              collapsible={true}
+              collapsedSize={0}
+              onCollapse={() => setIsLeftPanelCollapsed(true)}
+              onExpand={() => setIsLeftPanelCollapsed(false)}
+              className="bg-card"
+            >
+              <div className="h-full flex flex-col">
+                <div className="p-4 border-b flex items-center justify-between">
+                  <h2 className="text-lg font-semibold">Content Tools</h2>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={toggleLeftPanel}
+                        >
+                          <PanelLeft className="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        {isLeftPanelCollapsed ? 'Expand Panel' : 'Collapse Panel'}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Main Content */}
-        <div className="container mx-auto px-4 py-6">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <div className="flex justify-center mb-6">
-              <TabsList className="grid w-full max-w-md grid-cols-2 bg-background/60 backdrop-blur-sm">
-                <TabsTrigger value="create" className="flex items-center space-x-2">
-                  <Wand2 className="h-4 w-4" />
-                  <span>Create Post</span>
-                </TabsTrigger>
-                <TabsTrigger value="preview" className="flex items-center space-x-2">
-                  <Eye className="h-4 w-4" />
-                  <span>Visualize & Preview</span>
-                </TabsTrigger>
-              </TabsList>
-            </div>
-
-            {/* Create Post Tab */}
-            <TabsContent value="create" className="space-y-6">
-              <div className="grid lg:grid-cols-3 gap-6">
-                {/* Content Type Selection */}
-                <Card variant="elevated">
-                  <CardHeader>
-                    <CardTitle className="flex items-center text-lg">
-                      <FileText className="h-5 w-5 mr-2 text-primary" />
-                      Content Type
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <Tabs value={contentType} onValueChange={(value) => setContentType(value as 'text' | 'image' | 'video' | 'voice')} className="w-full">
-                      <TabsList className="grid w-full grid-cols-2 gap-2">
-                        <TabsTrigger value="text" className="flex flex-col items-center p-3">
-                          <FileText className="h-5 w-5 mb-1" />
-                          <span className="text-xs">Text Post</span>
-                        </TabsTrigger>
-                        <TabsTrigger value="image" className="flex flex-col items-center p-3">
-                          <ImageIcon className="h-5 w-5 mb-1" />
-                          <span className="text-xs">Image Post</span>
-                        </TabsTrigger>
-                        <TabsTrigger value="video" className="flex flex-col items-center p-3">
-                          <Video className="h-5 w-5 mb-1" />
-                          <span className="text-xs">Video Post</span>
-                        </TabsTrigger>
-                        <TabsTrigger value="voice" className="flex flex-col items-center p-3">
-                          <Mic className="h-5 w-5 mb-1" />
-                          <span className="text-xs">Voice Post</span>
-                        </TabsTrigger>
-                      </TabsList>
-                    </Tabs>
-                  </CardContent>
-                </Card>
-
-                {/* AI Generation */}
-                <Card variant="elevated">
-                  <CardHeader>
-                    <CardTitle className="flex items-center text-lg">
-                      <Sparkles className="h-5 w-5 mr-2 text-primary" />
-                      AI Content Generator
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <Label className="text-sm font-medium">Tone</Label>
-                        <Select value={tone} onValueChange={setTone}>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="professional">Professional</SelectItem>
-                            <SelectItem value="friendly">Friendly</SelectItem>
-                            <SelectItem value="humorous">Humorous</SelectItem>
-                            <SelectItem value="inspiring">Inspiring</SelectItem>
-                          </SelectContent>
-                        </Select>
+                
+                <Tabs value={activePanel} onValueChange={(value) => setActivePanel(value as 'editor' | 'media' | 'ai')} className="flex-1">
+                  <div className="px-4 pt-4">
+                    <TabsList className="grid w-full grid-cols-3">
+                      <TabsTrigger value="editor" className="text-xs">
+                        <FileText className="h-4 w-4 mr-1" />
+                        Editor
+                      </TabsTrigger>
+                      <TabsTrigger value="media" className="text-xs">
+                        <ImageIcon className="h-4 w-4 mr-1" />
+                        Media
+                      </TabsTrigger>
+                      <TabsTrigger value="ai" className="text-xs">
+                        <Sparkles className="h-4 w-4 mr-1" />
+                        AI
+                      </TabsTrigger>
+                    </TabsList>
+                  </div>
+                  
+                  <TabsContent value="editor" className="flex-1 p-4 overflow-auto">
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <Label>Content Type</Label>
+                          <div className="flex">
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button 
+                                    variant={isRecording ? "destructive" : "outline"} 
+                                    size="icon"
+                                    className="h-7 w-7"
+                                    onClick={handleVoiceRecord}
+                                  >
+                                    {isRecording ? <MicOff className="h-3 w-3" /> : <Mic className="h-3 w-3" />}
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  {isRecording ? 'Stop Recording' : 'Start Voice Recording'}
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-4 gap-2">
+                          <Button 
+                            variant={contentType === 'text' ? "default" : "outline"} 
+                            size="sm"
+                            className="h-8 text-xs"
+                            onClick={() => setContentType('text')}
+                          >
+                            <FileText className="h-3 w-3 mr-1" />
+                            Text
+                          </Button>
+                          <Button 
+                            variant={contentType === 'image' ? "default" : "outline"} 
+                            size="sm"
+                            className="h-8 text-xs"
+                            onClick={() => setContentType('image')}
+                          >
+                            <ImageIcon className="h-3 w-3 mr-1" />
+                            Image
+                          </Button>
+                          <Button 
+                            variant={contentType === 'video' ? "default" : "outline"} 
+                            size="sm"
+                            className="h-8 text-xs"
+                            onClick={() => setContentType('video')}
+                          >
+                            <Video className="h-3 w-3 mr-1" />
+                            Video
+                          </Button>
+                          <Button 
+                            variant={contentType === 'voice' ? "default" : "outline"} 
+                            size="sm"
+                            className="h-8 text-xs"
+                            onClick={() => setContentType('voice')}
+                          >
+                            <Mic className="h-3 w-3 mr-1" />
+                            Voice
+                          </Button>
+                        </div>
                       </div>
                       
-                      <div>
-                        <Label className="text-sm font-medium">Platform</Label>
+                      <div className="space-y-2">
+                        <Label>Platform</Label>
                         <Select value={platform} onValueChange={setPlatform}>
                           <SelectTrigger>
                             <SelectValue />
@@ -642,199 +785,277 @@ const PostStudio = () => {
                           </SelectContent>
                         </Select>
                       </div>
-                    </div>
-
-                    <div>
-                      <Label className="text-sm font-medium">Topic or Idea</Label>
-                      <Input 
-                        placeholder="Describe what you want to create..."
-                        className="mt-1"
-                        value={topicIdea}
-                        onChange={(e) => setTopicIdea(e.target.value)}
-                      />
-                    </div>
-
-                    <Button 
-                      onClick={handleGenerate}
-                      disabled={isGenerating}
-                      className="w-full bg-gradient-primary"
-                    >
-                      {isGenerating ? (
-                        <>
-                          <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                          AI Generating...
-                        </>
-                      ) : (
-                        <>
-                          <Sparkles className="h-4 w-4 mr-2" />
-                          Generate with AI
-                        </>
-                      )}
-                    </Button>
-                    
-                    {isGenerating && (
+                      
                       <div className="space-y-2">
-                        <Progress value={aiProgress} className="h-2" />
-                        <p className="text-xs text-muted-foreground text-center">
-                          Creating amazing content...
-                        </p>
+                        <Label>Tone</Label>
+                        <Select value={tone} onValueChange={setTone}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="professional">Professional</SelectItem>
+                            <SelectItem value="friendly">Friendly</SelectItem>
+                            <SelectItem value="humorous">Humorous</SelectItem>
+                            <SelectItem value="inspiring">Inspiring</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
-                    )}
-                  </CardContent>
-                </Card>
-
-                {/* Voice Assistant */}
-                <Card variant="elevated">
-                  <CardHeader>
-                    <CardTitle className="flex items-center justify-between text-lg">
-                      <div className="flex items-center">
-                        <Brain className="h-5 w-5 mr-2 text-primary" />
-                        Voice Assistant
+                      
+                      <div className="space-y-2">
+                        <Label>Schedule</Label>
+                        <Input 
+                          type="datetime-local"
+                          value={scheduleDate}
+                          onChange={(e) => setScheduleDate(e.target.value)}
+                        />
                       </div>
-                      <Switch 
-                        checked={isVoiceAssistantActive} 
-                        onCheckedChange={setIsVoiceAssistantActive}
-                        className="data-[state=checked]:bg-primary"
-                      />
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    {isVoiceAssistantActive ? (
-                      <VoiceInteraction 
-                        onContentUpdate={handleVoiceContentUpdate}
-                        onActionExecuted={handleVoiceAction}
-                      />
-                    ) : (
-                      <div className="text-center py-6 space-y-4">
-                        <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                          <Mic className="h-6 w-6 text-primary" />
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-medium mb-1">Voice Assistant</h3>
-                          <p className="text-sm text-muted-foreground mb-4">
-                            Enable voice commands to control the Post Studio with your voice
-                          </p>
-                          <Button 
-                            onClick={() => setIsVoiceAssistantActive(true)}
-                            className="bg-gradient-primary"
-                          >
-                            <Mic className="h-4 w-4 mr-2" />
-                            Enable Voice Assistant
-                          </Button>
-                        </div>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              </div>
-
-              <div className="grid lg:grid-cols-2 gap-6">
-                {/* Content Editor */}
-                <div className="space-y-6">
-                  <Card variant="elevated" className="flex-1">
-                    <CardHeader>
-                      <CardTitle className="flex items-center justify-between text-lg">
-                        <span>Content Editor</span>
-                        <div className="flex items-center space-x-2">
-                          <Button 
-                            variant={isRecording ? "destructive" : "outline"} 
-                            size="sm"
-                            onClick={handleVoiceRecord}
-                          >
-                            {isRecording ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-                          </Button>
-                        </div>
-                      </CardTitle>
-                      <div className="flex items-center justify-between text-sm text-muted-foreground">
-                        <span>{content.length}/2200 characters</span>
-                        <span className="text-xs">
-                          {platform === 'twitter' && content.length > 280 && (
-                            <span className="text-destructive">Too long for Twitter</span>
+                      
+                      <div className="pt-4">
+                        <Button 
+                          className="w-full bg-gradient-primary"
+                          onClick={handleGenerate}
+                          disabled={isGenerating}
+                        >
+                          {isGenerating ? (
+                            <>
+                              <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                              Generating...
+                            </>
+                          ) : (
+                            <>
+                              <Sparkles className="h-4 w-4 mr-2" />
+                              Generate with AI
+                            </>
                           )}
-                        </span>
+                        </Button>
                       </div>
-                    </CardHeader>
-                    <CardContent>
-                      <Textarea 
-                        value={content}
-                        onChange={(e) => setContent(e.target.value)}
-                        placeholder="Start typing your content here or use AI to generate..."
-                        className="min-h-[300px] resize-none text-base leading-relaxed"
-                      />
-                    </CardContent>
-                  </Card>
-
-                  {/* Media Content */}
-                  <Card variant="elevated">
-                    <CardHeader>
-                      <CardTitle className="flex items-center text-lg">
-                        <ImageIcon className="h-5 w-5 mr-2 text-primary" />
-                        Media Content
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <MultimodalContent onMediaUpdate={handleMediaUpdate} />
-                    </CardContent>
-                  </Card>
-
-                  {/* Publishing Actions */}
-                  <Card variant="elevated">
-                    <CardContent className="p-4">
-                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                        <div className="flex items-center space-x-2">
-                          <CalendarIcon className="h-4 w-4 text-muted-foreground" />
-                          <Input 
-                            type="datetime-local"
-                            value={scheduleDate}
-                            onChange={(e) => setScheduleDate(e.target.value)}
-                            className="w-auto"
+                    </div>
+                  </TabsContent>
+                  
+                  <TabsContent value="media" className="flex-1 p-4 overflow-auto">
+                    <MultimodalContent onMediaUpdate={handleMediaUpdate} />
+                  </TabsContent>
+                  
+                  <TabsContent value="ai" className="flex-1 p-4 overflow-auto">
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>AI Topic or Idea</Label>
+                        <Input 
+                          placeholder="Describe what you want to create..."
+                          value={topicIdea}
+                          onChange={(e) => setTopicIdea(e.target.value)}
+                        />
+                      </div>
+                      
+                      <Button 
+                        onClick={handleGenerate}
+                        disabled={isGenerating}
+                        className="w-full bg-gradient-primary"
+                      >
+                        {isGenerating ? (
+                          <>
+                            <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                            AI Generating...
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="h-4 w-4 mr-2" />
+                            Generate with AI
+                          </>
+                        )}
+                      </Button>
+                      
+                      {isGenerating && (
+                        <div className="space-y-2">
+                          <Progress value={aiProgress} className="h-2" />
+                          <p className="text-xs text-muted-foreground text-center">
+                            Creating amazing content...
+                          </p>
+                        </div>
+                      )}
+                      
+                      <div className="pt-4">
+                        <Label className="mb-2 block">Voice Assistant</Label>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm">Enable Voice AI</span>
+                          <Switch 
+                            checked={isVoiceAssistantActive} 
+                            onCheckedChange={setIsVoiceAssistantActive}
+                            className="data-[state=checked]:bg-primary"
                           />
                         </div>
-                        <div className="flex items-center space-x-2 w-full sm:w-auto">
-                          <Button 
-                            variant="outline" 
-                            className="flex-1 sm:flex-none"
-                            onClick={handleSchedulePost}
-                            disabled={isPublishing || !scheduleDate}
-                          >
-                            <Clock className="h-4 w-4 mr-2" />
-                            Schedule
-                          </Button>
-                          <Button 
-                            className="bg-gradient-primary flex-1 sm:flex-none"
-                            onClick={handlePublishNow}
-                            disabled={isPublishing}
-                          >
-                            {isPublishing ? (
-                              <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                            ) : (
-                              <Send className="h-4 w-4 mr-2" />
-                            )}
-                            {editingPost ? 'Update' : 'Publish'}
-                          </Button>
-                        </div>
                       </div>
-                    </CardContent>
-                  </Card>
+                      
+                      {isVoiceAssistantActive && (
+                        <div className="pt-2">
+                          <VoiceInteraction 
+                            onContentUpdate={handleVoiceContentUpdate}
+                            onActionExecuted={handleVoiceAction}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              </div>
+            </ResizablePanel>
+            
+            <ResizableHandle withHandle />
+            
+            {/* Middle Panel - Content Editor */}
+            <ResizablePanel defaultSize={isPreviewDetached ? 75 : 50} minSize={30}>
+              <div className="h-full flex flex-col">
+                <div className="p-4 border-b flex items-center justify-between">
+                  <h2 className="text-lg font-semibold">Content Editor</h2>
+                  <div className="flex items-center space-x-2">
+                    {lastSaved && (
+                      <Badge variant="outline" className="text-xs">
+                        <Save className="h-3 w-3 mr-1" />
+                        Saved {lastSaved.toLocaleTimeString()}
+                      </Badge>
+                    )}
+                  </div>
                 </div>
-
-                {/* Preview Section */}
-                <div className="lg:sticky lg:top-24 lg:h-fit space-y-6">
-                  <Card variant="elevated">
-                    <CardHeader className="pb-2">
-                      <CardTitle className="flex items-center justify-between text-lg">
-                        <span>Preview</span>
-                        <div className="flex items-center space-x-2">
+                
+                <div className="flex-1 p-4 overflow-auto">
+                  <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
+                    <span>{content.length}/2200 characters</span>
+                    <span className="text-xs">
+                      {platform === 'twitter' && content.length > 280 && (
+                        <span className="text-destructive">Too long for Twitter</span>
+                      )}
+                    </span>
+                  </div>
+                  
+                  <Textarea 
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    placeholder="Start typing your content here or use AI to generate..."
+                    className="min-h-[calc(100vh-20rem)] resize-none text-base leading-relaxed"
+                  />
+                </div>
+                
+                <div className="p-4 border-t">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center space-x-2">
+                      <Button 
+                        variant="outline" 
+                        className="text-xs h-9"
+                        onClick={handleSchedulePost}
+                        disabled={isPublishing || !scheduleDate}
+                      >
+                        <Clock className="h-4 w-4 mr-1" />
+                        Schedule
+                      </Button>
+                      <Button 
+                        variant="outline"
+                        className="text-xs h-9"
+                        onClick={() => setContent("")}
+                      >
+                        Clear
+                      </Button>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      {isPreviewDetached ? (
+                        <Button 
+                          variant="outline"
+                          className="text-xs h-9"
+                          onClick={togglePreviewDetached}
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          Dock Preview
+                        </Button>
+                      ) : (
+                        <Button 
+                          variant="outline"
+                          className="text-xs h-9"
+                          onClick={togglePreviewDetached}
+                        >
+                          <ExternalLink className="h-4 w-4 mr-1" />
+                          Detach Preview
+                        </Button>
+                      )}
+                      <Button 
+                        className="bg-gradient-primary"
+                        onClick={handlePublishNow}
+                        disabled={isPublishing}
+                      >
+                        {isPublishing ? (
+                          <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                        ) : (
+                          <Send className="h-4 w-4 mr-2" />
+                        )}
+                        {editingPost ? 'Update' : 'Publish'}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ResizablePanel>
+            
+            {!isPreviewDetached && (
+              <>
+                <ResizableHandle withHandle />
+                
+                {/* Right Panel - Preview */}
+                <ResizablePanel 
+                  defaultSize={25} 
+                  minSize={15}
+                  maxSize={40}
+                  collapsible={true}
+                  collapsedSize={0}
+                  onCollapse={() => setIsRightPanelCollapsed(true)}
+                  onExpand={() => setIsRightPanelCollapsed(false)}
+                  className="bg-card"
+                >
+                  <div className="h-full flex flex-col">
+                    <div className="p-4 border-b flex items-center justify-between">
+                      <h2 className="text-lg font-semibold">Preview</h2>
+                      <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-1">
+                          <span className="text-xs">Enhanced</span>
                           <Switch 
                             checked={enhancedPreview} 
                             onCheckedChange={setEnhancedPreview}
                             className="data-[state=checked]:bg-primary"
                           />
-                          <span className="text-sm">Enhanced</span>
                         </div>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={togglePreviewDetached}
+                              >
+                                <ExternalLink className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              Detach Preview
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={toggleRightPanel}
+                              >
+                                <PanelRight className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              {isRightPanelCollapsed ? 'Expand Panel' : 'Collapse Panel'}
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                    </div>
+                    
+                    <div className="flex-1 p-4 overflow-auto">
                       {enhancedPreview ? (
                         <EnhancedPreviewPanel 
                           content={content}
@@ -851,140 +1072,17 @@ const PostStudio = () => {
                           platform={platform}
                         />
                       )}
-                    </CardContent>
-                  </Card>
-
-                  {/* Analytics Insights */}
-                  <Card variant="elevated">
-                    <CardHeader>
-                      <CardTitle className="flex items-center text-lg">
-                        <Zap className="h-5 w-5 mr-2 text-primary" />
-                        AI Insights
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="p-3 bg-primary/5 rounded-lg border border-primary/20">
-                        <div className="flex items-center space-x-2 mb-2">
-                          <BarChart3 className="h-4 w-4 text-green-600" />
-                          <span className="text-sm font-medium">Engagement Prediction</span>
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          This content is predicted to perform 23% above average for {platform}.
-                        </p>
-                      </div>
-                      
-                      <div className="p-3 bg-accent/5 rounded-lg border border-accent/20">
-                        <div className="flex items-center space-x-2 mb-2">
-                          <Clock className="h-4 w-4 text-blue-600" />
-                          <span className="text-sm font-medium">Optimal Timing</span>
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          Best posting time: Today at 3:00 PM (+18% engagement boost)
-                        </p>
-                      </div>
-                      
-                      <div className="p-3 bg-secondary/5 rounded-lg border border-secondary/20">
-                        <div className="flex items-center space-x-2 mb-2">
-                          <Users className="h-4 w-4 text-purple-600" />
-                          <span className="text-sm font-medium">Audience Match</span>
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          92% audience compatibility with your brand voice and target demographics.
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </div>
-            </TabsContent>
-
-            {/* Preview Tab */}
-            <TabsContent value="preview" className="space-y-6">
-              <div className="grid lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-2">
-                  <EnhancedPreviewPanel 
-                    content={content}
-                    contentType={contentType}
-                    selectedMedia={selectedMedia}
-                    platform={platform}
-                    onError={(error) => toast.error(error)}
-                    onSuccess={(message) => toast.success(message)}
-                  />
-                </div>
-                
-                <div className="space-y-6">
-                  {/* Quick Actions */}
-                  <Card variant="elevated">
-                    <CardHeader>
-                      <CardTitle className="text-lg">Quick Actions</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-2 gap-3">
-                        <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2">
-                          <MessageSquare className="h-6 w-6" />
-                          <span className="text-sm">Request Review</span>
-                        </Button>
-                        <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2">
-                          <Palette className="h-6 w-6" />
-                          <span className="text-sm">Enhance</span>
-                        </Button>
-                        <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2">
-                          <Globe className="h-6 w-6" />
-                          <span className="text-sm">Translate</span>
-                        </Button>
-                        <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2">
-                          <Settings className="h-6 w-6" />
-                          <span className="text-sm">Settings</span>
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                  
-                  {/* Publishing Options */}
-                  <Card variant="elevated">
-                    <CardHeader>
-                      <CardTitle className="text-lg">Publishing</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="space-y-2">
-                        <Label>Schedule Date</Label>
-                        <Input 
-                          type="datetime-local"
-                          value={scheduleDate}
-                          onChange={(e) => setScheduleDate(e.target.value)}
-                        />
-                      </div>
-                      
-                      <div className="grid grid-cols-2 gap-3">
-                        <Button 
-                          variant="outline" 
-                          onClick={handleSchedulePost}
-                          disabled={isPublishing || !scheduleDate}
-                        >
-                          <Clock className="h-4 w-4 mr-2" />
-                          Schedule
-                        </Button>
-                        <Button 
-                          variant="default"
-                          onClick={handlePublishNow}
-                          disabled={isPublishing}
-                        >
-                          {isPublishing ? (
-                            <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                          ) : (
-                            <Send className="h-4 w-4 mr-2" />
-                          )}
-                          Publish Now
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
+                    </div>
+                  </div>
+                </ResizablePanel>
+              </>
+            )}
+          </ResizablePanelGroup>
         </div>
       </div>
+
+      {/* Detached Preview Window */}
+      {isPreviewDetached && <PreviewWindow />}
     </>
   );
 };
