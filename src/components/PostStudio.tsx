@@ -1056,8 +1056,7 @@ const PostStudio = () => {
                     </div>
                     
                     <div className="flex-1 p-4 overflow-auto">
-                      {enhancedPreview ? (
-                        <EnhancedPreviewPanel 
+                          <EnhancedPreviewPanel 
                           content={content}
                           contentType={contentType}
                           selectedMedia={selectedMedia}
@@ -1066,12 +1065,6 @@ const PostStudio = () => {
                           onError={(error) => toast.error(error)}
                           onSuccess={(message) => toast.success(message)}
                         />
-                      ) : (
-                        <PreviewPanel 
-                          content={content}
-                          platform={platform}
-                        />
-                      )}
                     </div>
                   </div>
                 </ResizablePanel>

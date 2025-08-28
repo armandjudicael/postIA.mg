@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Menu, User, Bell, X, ChevronDown } from "lucide-react";
+import { Sparkles, Menu, User, Bell, X, ChevronDown, Sun, Moon } from "lucide-react";
 import AuthModal from "@/components/AuthModal";
 import { useAuth } from "@/hooks/useAuth";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const Header = () => {
   const { isAuthenticated } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authModalTab, setAuthModalTab] = useState<"login" | "signup">("signup");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -61,16 +63,16 @@ const Header = () => {
           <div className="flex items-center space-x-3">
             <div className="flex items-center space-x-3 group cursor-pointer">
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-primary rounded-lg blur-md opacity-60 group-hover:opacity-80 transition-opacity" />
-                <div className="relative bg-background/90 backdrop-blur-sm rounded-lg p-2 border border-primary/20 group-hover:border-primary/40 transition-all">
-                  <Sparkles className="h-6 w-6 text-primary animate-pulse-glow" />
+                <div className="absolute inset-0 bg-gradient-secondary rounded-lg blur-md opacity-60 group-hover:opacity-80 transition-opacity" />
+                <div className="relative bg-card backdrop-blur-sm rounded-lg p-2 border border-highlight/20 group-hover:border-highlight/40 transition-all">
+                  <Sparkles className="h-6 w-6 text-highlight animate-pulse-glow" />
                 </div>
               </div>
               <div className="space-y-1">
-                <h1 className="text-xl font-bold text-gradient-primary group-hover:scale-105 transition-transform">
+                <h1 className="text-xl font-bold text-gradient-yellow group-hover:scale-105 transition-transform">
                   PostIA.mg
                 </h1>
-                <Badge variant="premium" size="sm" className="text-[10px] px-2 py-0.5">
+                <Badge variant="highlight" size="sm" className="text-[10px] px-2 py-0.5">
                   <Sparkles className="h-2.5 w-2.5 mr-1" />
                   AI-Powered
                 </Badge>
@@ -84,7 +86,7 @@ const Header = () => {
               <div key={item.label} className="relative group">
                 <a 
                   href={item.href} 
-                  className="flex items-center text-sm font-medium text-foreground/80 hover:text-primary transition-all duration-200 hover:scale-105 focus-ring rounded-md px-2 py-1"
+                  className="flex items-center text-sm font-medium text-foreground/80 hover:text-highlight transition-all duration-200 hover:scale-105 focus-ring rounded-md px-3 py-2"
                 >
                   {item.label}
                   {item.hasDropdown && (
@@ -93,22 +95,37 @@ const Header = () => {
                 </a>
                 
                 {/* Dropdown indicator */}
-                <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-primary group-hover:w-full transition-all duration-300" />
+                <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-secondary group-hover:w-full transition-all duration-300" />
               </div>
             ))}
           </nav>
 
           {/* Actions */}
           <div className="flex items-center space-x-3">
+            {/* Theme Toggle */}
+            <Button 
+              variant="ghost" 
+              size="icon-sm" 
+              onClick={toggleTheme}
+              className="hover:bg-highlight/10 hover:text-highlight transition-colors focus-ring"
+              aria-label="Toggle theme"
+            >
+              {theme === 'dark' ? (
+                <Sun className="h-4 w-4" />
+              ) : (
+                <Moon className="h-4 w-4" />
+              )}
+            </Button>
+            
             {/* Notifications */}
             <Button 
               variant="ghost" 
               size="icon-sm" 
-              className="relative hover:bg-primary/10 transition-colors focus-ring"
+              className="relative hover:bg-highlight/10 hover:text-highlight transition-colors focus-ring"
               aria-label="Notifications"
             >
               <Bell className="h-4 w-4" />
-              <span className="absolute -top-1 -right-1 h-3 w-3 bg-gradient-primary rounded-full animate-pulse-glow">
+              <span className="absolute -top-1 -right-1 h-3 w-3 bg-gradient-secondary rounded-full animate-pulse-glow">
                 <span className="sr-only">New notifications</span>
               </span>
             </Button>
@@ -118,7 +135,7 @@ const Header = () => {
               variant="ghost" 
               size="icon-sm" 
               onClick={handleUserLogin}
-              className="hover:bg-primary/10 transition-colors focus-ring"
+              className="hover:bg-highlight/10 hover:text-highlight transition-colors focus-ring"
               aria-label="User account"
             >
               <User className="h-4 w-4" />
@@ -126,7 +143,7 @@ const Header = () => {
 
             {/* CTA Button */}
             <Button 
-              variant="hero" 
+              variant="highlight" 
               size="lg"
               className="hidden sm:flex animate-bounce-in"
               onClick={handleGetStarted}
@@ -139,7 +156,7 @@ const Header = () => {
             <Button 
               variant="ghost" 
               size="icon-sm" 
-              className="lg:hidden hover:bg-primary/10 transition-colors focus-ring"
+              className="lg:hidden hover:bg-highlight/10 hover:text-highlight transition-colors focus-ring"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Toggle mobile menu"
             >
@@ -160,7 +177,7 @@ const Header = () => {
                 <a
                   key={item.label}
                   href={item.href}
-                  className="flex items-center justify-between p-3 rounded-lg hover:bg-primary/10 transition-colors focus-ring animate-slide-up"
+                  className="flex items-center justify-between p-3 rounded-lg hover:bg-highlight/10 hover:text-highlight transition-colors focus-ring animate-slide-up"
                   style={{ animationDelay: `${index * 0.1}s` }}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
@@ -171,7 +188,7 @@ const Header = () => {
               
               <div className="pt-4 border-t border-border/20">
                 <Button 
-                  variant="hero" 
+                  variant="highlight" 
                   size="lg"
                   className="w-full animate-slide-up"
                   style={{ animationDelay: '0.4s' }}

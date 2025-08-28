@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils"
 const Card = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & {
-    variant?: "default" | "elevated" | "glass" | "gradient" | "outline" | "premium"
+    variant?: "default" | "elevated" | "glass" | "gradient" | "outline" | "premium" | "highlight"
     hover?: boolean
   }
 >(({ className, variant = "default", hover = false, ...props }, ref) => (
@@ -14,12 +14,26 @@ const Card = React.forwardRef<
     className={cn(
       "rounded-xl border bg-card text-card-foreground transition-all duration-300",
       {
+        // Default dark card
         "shadow-card hover:shadow-elegant border-border/50": variant === "default",
-        "shadow-elegant hover:shadow-glow border-border/30 bg-gradient-subtle": variant === "elevated",
-        "glass-effect border-white/10 backdrop-blur-md": variant === "glass",
-        "bg-gradient-primary text-white border-0 shadow-glow": variant === "gradient",
-        "border-2 border-primary/20 hover:border-primary/40 bg-background": variant === "outline",
-        "bg-gradient-hero text-white border-0 shadow-glow animate-pulse-glow": variant === "premium",
+        
+        // Elevated card with enhanced shadows
+        "shadow-elegant hover:shadow-glow border-border/30 bg-gradient-card": variant === "elevated",
+        
+        // Glass effect for dark theme
+        "glass-effect border-highlight/10 backdrop-blur-md": variant === "glass",
+        
+        // Gradient card with dark theme
+        "bg-gradient-primary text-foreground border-0 shadow-glow": variant === "gradient",
+        
+        // Outline with yellow highlights
+        "border-2 border-border hover:border-highlight/40 bg-card hover:bg-highlight/5": variant === "outline",
+        
+        // Premium card with yellow accents
+        "bg-gradient-hero text-foreground border-0 shadow-glow animate-pulse-glow": variant === "premium",
+        
+        // Highlight card with yellow theme
+        "bg-highlight/10 border-highlight/30 text-foreground hover:bg-highlight/20 hover:border-highlight": variant === "highlight",
       },
       hover && "hover:scale-[1.02] hover:-translate-y-1 cursor-pointer",
       className
@@ -50,8 +64,8 @@ const CardTitle = React.forwardRef<
   <h3
     ref={ref}
     className={cn(
-      "text-2xl font-semibold leading-none tracking-tight",
-      gradient && "bg-gradient-primary bg-clip-text text-transparent",
+      "text-2xl font-semibold leading-none tracking-tight text-card-foreground",
+      gradient && "text-gradient-yellow",
       className
     )}
     {...props}

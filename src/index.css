@@ -2,157 +2,135 @@
 @tailwind components;
 @tailwind utilities;
 
-/* PostIA.mg Design System - Dark Primary & Yellow Secondary Theme */
+/* PostIA.mg Design System - Dark Theme with Yellow Highlights */
 
 @layer base {
   :root {
-    /* Dark Primary & Yellow Secondary Theme - Light Mode */
-    --background: 255 255 255;  /* Pure white */
-    --foreground: 15 23 42;     /* Dark slate 900 - primary dark */
+    /* Dark Theme as Default - Dark backgrounds with yellow highlights */
+    --background: 18 18 18;         /* #121212 - Dark background */
+    --foreground: 245 245 245;      /* #f5f5f5 - Light text */
 
-    --card: 255 255 255;        /* Pure white */
-    --card-foreground: 15 23 42; /* Dark slate 900 */
+    /* Yellow Highlight System */
+    --highlight: 255 215 0;         /* #FFD700 - Pure gold yellow */
+    --highlight-foreground: 18 18 18; /* Dark text on yellow */
+    --highlight-hover: 255 193 7;   /* Slightly darker yellow for hover */
+    --highlight-muted: 255 215 0;   /* Yellow with opacity for subtle highlights */
 
-    --popover: 255 255 255;
-    --popover-foreground: 15 23 42;
+    /* Dark Theme Card System */
+    --card: 30 30 30;               /* #1e1e1e - Slightly lighter dark */
+    --card-foreground: 245 245 245; /* Light text on cards */
 
-    /* Primary Colors: Dark as Primary, Yellow as Secondary */
-    --primary: 15 23 42;        /* Dark slate 900 - primary */
-    --primary-foreground: 255 255 255; /* White text on dark */
-    --primary-glow: 30 41 59;   /* Slate 800 */
+    --popover: 30 30 30;            /* #1e1e1e */
+    --popover-foreground: 245 245 245;
 
-    --secondary: 234 179 8;     /* Yellow 500 - secondary */
-    --secondary-foreground: 15 23 42; /* Dark text on yellow */
+    /* Primary Colors: Dark backgrounds */
+    --primary: 30 30 30;            /* #1e1e1e - Primary dark */
+    --primary-foreground: 245 245 245; /* Light text */
+    --primary-glow: 45 45 45;       /* Slightly lighter for glow effects */
 
-    --muted: 248 250 252;       /* Very light gray */
-    --muted-foreground: 100 116 139; /* Slate 500 */
+    /* Secondary: Yellow highlights */
+    --secondary: 255 215 0;         /* #FFD700 - Yellow */
+    --secondary-foreground: 18 18 18; /* Dark text on yellow */
 
-    --accent: 245 158 11;       /* Amber 500 - complementary */
-    --accent-foreground: 15 23 42; /* Dark text */
+    /* Muted colors for dark theme */
+    --muted: 45 45 45;              /* #2d2d2d - Muted dark */
+    --muted-foreground: 163 163 163; /* #a3a3a3 - Muted light text */
 
-    --destructive: 239 68 68;   /* Red 500 */
+    /* Accent: Complementary yellow tones */
+    --accent: 45 45 45;             /* #2d2d2d - Dark accent */
+    --accent-foreground: 255 215 0; /* Yellow text on dark */
+
+    /* Status colors optimized for dark theme */
+    --destructive: 239 68 68;       /* Red for errors */
     --destructive-foreground: 255 255 255;
 
-    --border: 226 232 240;      /* Light gray border */
-    --input: 255 255 255;       /* White */
-    --ring: 15 23 42;           /* Dark slate 900 */
+    --success: 34 197 94;           /* Green for success */
+    --success-foreground: 255 255 255;
+
+    --warning: 255 215 0;           /* Yellow for warnings */
+    --warning-foreground: 18 18 18;
+
+    --info: 59 130 246;             /* Blue for info */
+    --info-foreground: 255 255 255;
+
+    /* Border and input colors for dark theme */
+    --border: 64 64 64;             /* #404040 - Dark borders */
+    --input: 30 30 30;              /* #1e1e1e - Dark input background */
+    --ring: 255 215 0;              /* Yellow focus ring */
 
     --radius: 0.75rem;
 
-    /* AI Color Extensions */
-    --ai-primary: 15 23 42;     /* Dark slate 900 */
-    --ai-secondary: 234 179 8;  /* Yellow 500 */
-    --ai-accent: 245 158 11;    /* Amber 500 */
-    --ai-success: 34 197 94;    /* Emerald 500 */
-    --ai-warning: 251 191 36;   /* Amber 400 */
-    --ai-error: 239 68 68;      /* Red 500 */
-    --ai-info: 59 130 246;      /* Blue 500 */
+    /* AI Color Extensions for Dark Theme */
+    --ai-primary: 30 30 30;         /* Dark */
+    --ai-secondary: 255 215 0;      /* Yellow */
+    --ai-accent: 255 193 7;         /* Darker yellow */
+    --ai-success: 34 197 94;        /* Green */
+    --ai-warning: 255 215 0;        /* Yellow */
+    --ai-error: 239 68 68;          /* Red */
+    --ai-info: 59 130 246;          /* Blue */
 
-    /* Premium Gradients - Dark Primary, Yellow Secondary */
-    --gradient-primary: linear-gradient(135deg, rgb(15 23 42), rgb(30 41 59));
-    --gradient-secondary: linear-gradient(135deg, rgb(234 179 8), rgb(250 204 21));
-    --gradient-accent: linear-gradient(135deg, rgb(245 158 11), rgb(217 119 6));
-    --gradient-hero: linear-gradient(135deg, rgb(15 23 42) 0%, rgb(30 41 59) 30%, rgb(234 179 8) 70%, rgb(250 204 21) 100%);
-    --gradient-subtle: linear-gradient(180deg, rgb(255 255 255), rgb(248 250 252));
-    --gradient-card: linear-gradient(145deg, rgb(255 255 255) 0%, rgb(248 250 252) 100%);
-    --gradient-dark: linear-gradient(135deg, rgb(15 23 42), rgb(30 41 59));
+    /* Dark Theme Gradients with Yellow Accents */
+    --gradient-primary: linear-gradient(135deg, rgb(18 18 18), rgb(30 30 30));
+    --gradient-secondary: linear-gradient(135deg, rgb(255 215 0), rgb(255 193 7));
+    --gradient-accent: linear-gradient(135deg, rgb(255 193 7), rgb(245 158 11));
+    --gradient-hero: linear-gradient(135deg, rgb(18 18 18) 0%, rgb(30 30 30) 30%, rgb(255 215 0) 70%, rgb(255 193 7) 100%);
+    --gradient-subtle: linear-gradient(180deg, rgb(18 18 18), rgb(30 30 30));
+    --gradient-card: linear-gradient(145deg, rgb(30 30 30) 0%, rgb(45 45 45) 100%);
+    --gradient-dark: linear-gradient(135deg, rgb(30 30 30), rgb(18 18 18));
     
-    /* Glass Effect */
-    --glass: rgba(255, 255, 255, 0.9);
-    --glass-border: rgba(15, 23, 42, 0.1);
+    /* Glass Effect for Dark Theme */
+    --glass: rgba(30, 30, 30, 0.9);
+    --glass-border: rgba(255, 215, 0, 0.2);
 
-    /* Shadows */
-    --shadow-elegant: 0 12px 35px -8px rgba(15, 23, 42, 0.15);
-    --shadow-glow: 0 0 45px rgba(234, 179, 8, 0.3);
-    --shadow-card: 0 6px 25px -3px rgba(15, 23, 42, 0.08);
-    --shadow-button: 0 6px 15px -3px rgba(15, 23, 42, 0.2);
-    --shadow-modal: 0 30px 60px -15px rgba(15, 23, 42, 0.15);
-    --shadow-platform: 0 10px 30px -6px rgba(15, 23, 42, 0.12);
+    /* Dark Theme Shadows with Yellow Glow */
+    --shadow-elegant: 0 12px 35px -8px rgba(0, 0, 0, 0.4);
+    --shadow-glow: 0 0 45px rgba(255, 215, 0, 0.3);
+    --shadow-card: 0 6px 25px -3px rgba(0, 0, 0, 0.2);
+    --shadow-button: 0 6px 15px -3px rgba(255, 215, 0, 0.25);
+    --shadow-modal: 0 30px 60px -15px rgba(0, 0, 0, 0.5);
+    --shadow-platform: 0 10px 30px -6px rgba(0, 0, 0, 0.3);
     
     /* Animation Variables */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
-    /* Sidebar theme */
-    --sidebar-background: 248 250 252;  /* Very light gray */
-    --sidebar-foreground: 15 23 42;     /* Dark slate 900 */
-    --sidebar-primary: 15 23 42;        /* Dark slate 900 */
-    --sidebar-primary-foreground: 255 255 255;
-    --sidebar-accent: 241 245 249;      /* Light gray */
-    --sidebar-accent-foreground: 15 23 42;
-    --sidebar-border: 226 232 240;      /* Light gray border */
-    --sidebar-ring: 15 23 42;           /* Dark slate 900 */
+    /* Sidebar theme for dark mode */
+    --sidebar-background: 30 30 30;     /* #1e1e1e */
+    --sidebar-foreground: 245 245 245;  /* Light text */
+    --sidebar-primary: 255 215 0;       /* Yellow */
+    --sidebar-primary-foreground: 18 18 18;
+    --sidebar-accent: 45 45 45;         /* #2d2d2d */
+    --sidebar-accent-foreground: 245 245 245;
+    --sidebar-border: 64 64 64;         /* #404040 */
+    --sidebar-ring: 255 215 0;          /* Yellow */
   }
 
-  .dark {
-    /* Dark Mode - Dark Primary with Yellow Secondary accents */
-    --background: 15 23 42;         /* Dark slate 900 background */
-    --foreground: 248 250 252;      /* Light text */
-
-    --card: 30 41 59;               /* Slate 800 cards */
-    --card-foreground: 248 250 252; /* Light text */
-
-    --popover: 30 41 59;
-    --popover-foreground: 248 250 252;
-
-    --primary: 30 41 59;            /* Slate 800 for dark mode */
-    --primary-foreground: 248 250 252; /* Light text on dark */
-    --primary-glow: 51 65 85;       /* Slate 700 */
-
-    --secondary: 250 204 21;        /* Bright yellow for dark mode */
-    --secondary-foreground: 15 23 42; /* Dark text on yellow */
-
-    --muted: 51 65 85;              /* Slate 700 */
-    --muted-foreground: 148 163 184; /* Slate 400 */
-
-    --accent: 251 191 36;           /* Bright amber for dark mode */
-    --accent-foreground: 15 23 42;  /* Dark text */
-
-    --destructive: 248 113 113;     /* Softer red for dark mode */
-    --destructive-foreground: 248 250 252;
-
-    --border: 51 65 85;             /* Slate 700 borders */
-    --input: 30 41 59;              /* Slate 800 input background */
-    --ring: 250 204 21;             /* Bright yellow */
-
-    /* Dark mode AI colors */
-    --ai-primary: 30 41 59;         /* Slate 800 */
-    --ai-secondary: 250 204 21;     /* Bright yellow */
-    --ai-accent: 251 191 36;        /* Bright amber */
-    --ai-success: 52 211 153;       /* Emerald 400 */
-    --ai-warning: 251 191 36;       /* Bright amber */
-    --ai-error: 248 113 113;        /* Softer red */
-    --ai-info: 96 165 250;          /* Blue 400 */
-
-    /* Dark mode gradients */
-    --gradient-primary: linear-gradient(135deg, rgb(30 41 59), rgb(51 65 85));
-    --gradient-secondary: linear-gradient(135deg, rgb(250 204 21), rgb(234 179 8));
-    --gradient-accent: linear-gradient(135deg, rgb(251 191 36), rgb(245 158 11));
-    --gradient-hero: linear-gradient(135deg, rgb(30 41 59) 0%, rgb(51 65 85) 30%, rgb(250 204 21) 70%, rgb(234 179 8) 100%);
-    --gradient-subtle: linear-gradient(180deg, rgb(15 23 42), rgb(30 41 59));
-    --gradient-card: linear-gradient(145deg, rgb(30 41 59) 0%, rgb(15 23 42) 100%);
-    --gradient-dark: linear-gradient(135deg, rgb(51 65 85), rgb(30 41 59));
-
-    --glass: rgba(15, 23, 42, 0.9);
-    --glass-border: rgba(250, 204, 21, 0.2);
-
-    /* Dark mode shadows */
-    --shadow-elegant: 0 12px 35px -8px rgba(0, 0, 0, 0.4);
-    --shadow-glow: 0 0 45px rgba(250, 204, 21, 0.3);
-    --shadow-card: 0 6px 25px -3px rgba(0, 0, 0, 0.3);
-    --shadow-button: 0 6px 15px -3px rgba(250, 204, 21, 0.25);
-    --shadow-modal: 0 30px 60px -15px rgba(0, 0, 0, 0.5);
-    --shadow-platform: 0 10px 30px -6px rgba(0, 0, 0, 0.3);
-
-    /* Dark sidebar */
-    --sidebar-background: 30 41 59;  /* Slate 800 */
-    --sidebar-foreground: 248 250 252;
-    --sidebar-primary: 30 41 59;     /* Slate 800 */
-    --sidebar-primary-foreground: 248 250 252;
-    --sidebar-accent: 51 65 85;      /* Slate 700 */
-    --sidebar-accent-foreground: 248 250 252;
-    --sidebar-border: 71 85 105;     /* Slate 600 */
-    --sidebar-ring: 250 204 21;      /* Bright yellow */
+  /* Light mode override (optional - can be toggled) */
+  .light {
+    --background: 255 255 255;      /* White background */
+    --foreground: 18 18 18;         /* Dark text */
+    
+    --card: 255 255 255;            /* White cards */
+    --card-foreground: 18 18 18;    /* Dark text on cards */
+    
+    --primary: 30 30 30;            /* Dark primary */
+    --primary-foreground: 245 245 245;
+    
+    --muted: 248 250 252;           /* Light muted */
+    --muted-foreground: 100 116 139;
+    
+    --border: 226 232 240;          /* Light borders */
+    --input: 255 255 255;           /* White inputs */
+    
+    /* Light mode shadows */
+    --shadow-elegant: 0 12px 35px -8px rgba(0, 0, 0, 0.15);
+    --shadow-card: 0 6px 25px -3px rgba(0, 0, 0, 0.08);
+    --shadow-button: 0 6px 15px -3px rgba(0, 0, 0, 0.2);
+    
+    /* Light sidebar */
+    --sidebar-background: 248 250 252;
+    --sidebar-foreground: 18 18 18;
+    --sidebar-border: 226 232 240;
   }
 }
 
@@ -166,19 +144,25 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
-  /* Improved Typography */
+  /* Improved Typography Hierarchy */
   h1, h2, h3, h4, h5, h6 {
     @apply font-semibold tracking-tight text-foreground;
   }
 
-  h1 { @apply text-4xl lg:text-5xl; }
-  h2 { @apply text-3xl lg:text-4xl; }
-  h3 { @apply text-2xl lg:text-3xl; }
-  h4 { @apply text-xl lg:text-2xl; }
-  h5 { @apply text-lg lg:text-xl; }
-  h6 { @apply text-base lg:text-lg; }
+  h1 { @apply text-4xl lg:text-5xl xl:text-6xl; }
+  h2 { @apply text-3xl lg:text-4xl xl:text-5xl; }
+  h3 { @apply text-2xl lg:text-3xl xl:text-4xl; }
+  h4 { @apply text-xl lg:text-2xl xl:text-3xl; }
+  h5 { @apply text-lg lg:text-xl xl:text-2xl; }
+  h6 { @apply text-base lg:text-lg xl:text-xl; }
 
-  /* Custom utility classes for Dark Primary, Yellow Secondary theme */
+  /* Responsive Typography */
+  .text-responsive-xl { @apply text-lg sm:text-xl md:text-2xl lg:text-3xl; }
+  .text-responsive-lg { @apply text-base sm:text-lg md:text-xl lg:text-2xl; }
+  .text-responsive-md { @apply text-sm sm:text-base md:text-lg lg:text-xl; }
+  .text-responsive-sm { @apply text-xs sm:text-sm md:text-base lg:text-lg; }
+
+  /* Custom utility classes for Dark Theme with Yellow Highlights */
   .gradient-primary {
     background: var(--gradient-primary);
   }
@@ -234,7 +218,7 @@
     transition: var(--transition-bounce);
   }
 
-  /* Text gradients */
+  /* Text gradients with yellow highlights */
   .text-gradient-primary {
     @apply bg-gradient-primary bg-clip-text text-transparent;
   }
@@ -251,8 +235,9 @@
     @apply bg-gradient-secondary bg-clip-text text-transparent;
   }
 
-  .text-gradient-dark {
-    @apply bg-gradient-dark bg-clip-text text-transparent;
+  .text-gradient-yellow {
+    background: linear-gradient(135deg, rgb(255 215 0), rgb(255 193 7));
+    @apply bg-clip-text text-transparent;
   }
 
   /* Button utilities */
@@ -264,37 +249,41 @@
     @apply shadow-button hover:shadow-glow;
   }
 
+  .btn-yellow {
+    @apply bg-highlight text-highlight-foreground hover:bg-highlight-hover;
+  }
+
   /* Background size for gradient animations */
   .bg-size-200 {
     background-size: 200% 200%;
   }
 
-  /* Color-specific utilities */
-  .bg-dark-primary {
-    background-color: rgb(15 23 42);
+  /* Dark theme specific utilities */
+  .bg-dark {
+    background-color: rgb(18 18 18);
   }
 
-  .text-dark-primary {
-    color: rgb(15 23 42);
+  .bg-dark-card {
+    background-color: rgb(30 30 30);
   }
 
-  .border-dark-primary {
-    border-color: rgb(15 23 42);
+  .bg-dark-muted {
+    background-color: rgb(45 45 45);
   }
 
-  .bg-yellow-secondary {
-    background-color: rgb(234 179 8);
+  .text-yellow {
+    color: rgb(255 215 0);
   }
 
-  .text-yellow-secondary {
-    color: rgb(234 179 8);
+  .border-yellow {
+    border-color: rgb(255 215 0);
   }
 
-  .border-yellow-secondary {
-    border-color: rgb(234 179 8);
+  .hover-yellow:hover {
+    @apply bg-highlight/10 border-highlight/30 text-highlight;
   }
 
-  /* Animations with Dark Primary, Yellow Secondary theme */
+  /* Enhanced Animations for Dark Theme */
   @keyframes float {
     0%, 100% { transform: translateY(0px); }
     50% { transform: translateY(-10px); }
@@ -302,19 +291,10 @@
 
   @keyframes pulse-glow {
     0%, 100% { 
-      box-shadow: 0 0 25px rgba(234, 179, 8, 0.4);
+      box-shadow: 0 0 25px rgba(255, 215, 0, 0.4);
     }
     50% { 
-      box-shadow: 0 0 50px rgba(234, 179, 8, 0.7);
-    }
-  }
-
-  @keyframes pulse-glow-dark {
-    0%, 100% { 
-      box-shadow: 0 0 25px rgba(250, 204, 21, 0.4);
-    }
-    50% { 
-      box-shadow: 0 0 50px rgba(250, 204, 21, 0.7);
+      box-shadow: 0 0 50px rgba(255, 215, 0, 0.7);
     }
   }
 
@@ -364,6 +344,27 @@
     }
   }
 
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes scale-in {
+    from {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* Animation Classes */
   .animate-float {
     animation: float 6s ease-in-out infinite;
   }
@@ -388,9 +389,12 @@
     animation: slide-up 0.5s ease-out;
   }
 
-  /* Dark mode animation adjustments */
-  .dark .animate-pulse-glow {
-    animation: pulse-glow-dark 2s ease-in-out infinite;
+  .animate-fade-in {
+    animation: fade-in 0.4s ease-out;
+  }
+
+  .animate-scale-in {
+    animation: scale-in 0.3s ease-out;
   }
 
   /* Responsive utilities */
@@ -398,53 +402,82 @@
     @apply w-full max-w-none px-4 sm:px-6 lg:px-8;
   }
 
-  /* Focus styles for accessibility */
+  /* Enhanced Focus styles for accessibility with yellow highlights */
   .focus-ring {
-    @apply focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background;
+    @apply focus:outline-none focus:ring-2 focus:ring-highlight focus:ring-offset-2 focus:ring-offset-background;
   }
 
-  /* Loading states */
+  .focus-ring-inset {
+    @apply focus:outline-none focus:ring-2 focus:ring-inset focus:ring-highlight;
+  }
+
+  /* Loading states with yellow theme */
   .loading-shimmer {
-    background: linear-gradient(90deg, transparent, rgba(234, 179, 8, 0.15), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.15), transparent);
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
   }
 
-  /* Scrollbar styling */
+  /* Enhanced Scrollbar styling for dark theme */
   .scrollbar-thin {
     scrollbar-width: thin;
-    scrollbar-color: rgb(234 179 8) transparent;
+    scrollbar-color: rgb(255 215 0) rgb(45 45 45);
   }
 
   .scrollbar-thin::-webkit-scrollbar {
-    width: 6px;
+    width: 8px;
+    height: 8px;
   }
 
   .scrollbar-thin::-webkit-scrollbar-track {
-    background: transparent;
+    background: rgb(45 45 45);
+    border-radius: 4px;
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background-color: rgb(234 179 8);
-    border-radius: 3px;
+    background-color: rgb(255 215 0);
+    border-radius: 4px;
+    border: 1px solid rgb(30 30 30);
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background-color: rgb(250 204 21);
+    background-color: rgb(255 193 7);
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-corner {
+    background: rgb(45 45 45);
+  }
+
+  /* Interactive element states */
+  .interactive-element {
+    @apply transition-all duration-300 ease-out;
+  }
+
+  .interactive-element:hover {
+    @apply transform scale-105 shadow-glow;
+  }
+
+  .interactive-element:active {
+    @apply transform scale-95;
+  }
+
+  /* Card hover effects */
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-glow hover:-translate-y-1;
+  }
+
+  /* Button hover effects with yellow highlights */
+  .btn-hover-yellow {
+    @apply transition-all duration-300 hover:bg-highlight hover:text-highlight-foreground hover:shadow-glow hover:scale-105;
   }
 
   /* High contrast mode support */
   @media (prefers-contrast: high) {
     :root {
-      --primary: 15 23 42;
-      --secondary: 234 179 8;
-      --foreground: 15 23 42;
-    }
-    
-    .dark {
-      --primary: 30 41 59;
-      --secondary: 250 204 21;
-      --foreground: 248 250 252;
+      --foreground: 255 255 255;
+      --background: 0 0 0;
+      --highlight: 255 255 0;
+      --border: 128 128 128;
     }
   }
 
@@ -455,13 +488,63 @@
     .animate-gradient-x,
     .animate-shimmer,
     .animate-bounce-in,
-    .animate-slide-up {
+    .animate-slide-up,
+    .animate-fade-in,
+    .animate-scale-in {
       animation: none;
     }
     
     .transition-smooth,
-    .transition-bounce {
+    .transition-bounce,
+    .interactive-element {
       transition: none;
     }
+  }
+
+  /* Mobile-first responsive spacing */
+  .spacing-responsive {
+    @apply space-y-4 sm:space-y-6 md:space-y-8 lg:space-y-10;
+  }
+
+  .padding-responsive {
+    @apply p-4 sm:p-6 md:p-8 lg:p-10;
+  }
+
+  .margin-responsive {
+    @apply m-4 sm:m-6 md:m-8 lg:m-10;
+  }
+
+  /* Typography utilities for better hierarchy */
+  .text-display {
+    @apply text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight;
+  }
+
+  .text-headline {
+    @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight;
+  }
+
+  .text-title {
+    @apply text-xl sm:text-2xl md:text-3xl font-semibold;
+  }
+
+  .text-body {
+    @apply text-base sm:text-lg leading-relaxed;
+  }
+
+  .text-caption {
+    @apply text-sm text-muted-foreground;
+  }
+
+  /* Consistent spacing system */
+  .space-section {
+    @apply space-y-8 sm:space-y-12 md:space-y-16 lg:space-y-20;
+  }
+
+  .space-component {
+    @apply space-y-4 sm:space-y-6 md:space-y-8;
+  }
+
+  .space-element {
+    @apply space-y-2 sm:space-y-3 md:space-y-4;
   }
 }

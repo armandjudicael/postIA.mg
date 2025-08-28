@@ -364,7 +364,7 @@ const PostHistory = ({ onEditPost, onDuplicatePost }: PostHistoryProps) => {
 
             <Select value={platformFilter} onValueChange={setPlatformFilter}>
               <SelectTrigger className="w-32">
-                <SelectValue placeholder="Platform" />
+                <SelectValue placeholder="Platform"/>
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Platforms</SelectItem>

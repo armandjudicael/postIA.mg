@@ -5,31 +5,62 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 relative overflow-hidden",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-highlight focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 relative overflow-hidden",
   {
     variants: {
       variant: {
-        default: "bg-gradient-primary text-primary-foreground shadow-button hover:shadow-glow hover:scale-[1.02] active:scale-[0.98] transition-all duration-200",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-sm hover:shadow-md",
-        outline: "border border-border bg-background hover:bg-muted hover:text-foreground hover:border-primary/50 transition-all duration-200",
-        secondary: "bg-gradient-secondary text-secondary-foreground shadow-elegant hover:shadow-glow hover:scale-[1.02] active:scale-[0.98]",
-        ghost: "hover:bg-muted hover:text-foreground hover:scale-[1.02] active:scale-[0.98] transition-all duration-200",
-        link: "text-primary underline-offset-4 hover:underline hover:text-primary/80",
-        hero: "bg-gradient-hero text-white shadow-glow px-8 py-4 text-lg font-semibold hover:shadow-elegant hover:scale-[1.05] active:scale-[0.95] animate-pulse-glow relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700",
-        accent: "bg-gradient-accent text-accent-foreground shadow-elegant hover:shadow-glow hover:scale-[1.02] active:scale-[0.98]",
-        glass: "glass-effect text-white border-white/20 hover:bg-white/20 backdrop-blur-md hover:border-primary/30 transition-all duration-300",
-        warning: "bg-ai-warning text-black shadow-button hover:shadow-glow hover:scale-[1.02] active:scale-[0.98]",
-        success: "bg-ai-success text-white shadow-button hover:shadow-glow hover:scale-[1.02] active:scale-[0.98]",
-        premium: "bg-gradient-to-r from-primary via-accent to-primary bg-size-200 animate-gradient-x text-primary-foreground shadow-glow hover:shadow-elegant hover:scale-[1.02]"
+        // Primary dark button with yellow highlights
+        default: "bg-card text-card-foreground border border-border hover:bg-highlight hover:text-highlight-foreground hover:border-highlight shadow-card hover:shadow-glow hover:scale-[1.02] active:scale-[0.98] transition-all duration-200",
+        
+        // Yellow highlight button (main CTA)
+        highlight: "bg-highlight text-highlight-foreground shadow-button hover:bg-highlight-hover hover:shadow-glow hover:scale-[1.02] active:scale-[0.98] transition-all duration-200",
+        
+        // Destructive with proper dark theme
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-card hover:shadow-md border border-destructive/20",
+        
+        // Outline with yellow highlights on hover
+        outline: "border border-border bg-transparent hover:bg-highlight/10 hover:text-highlight hover:border-highlight transition-all duration-200",
+        
+        // Secondary with dark theme
+        secondary: "bg-muted text-muted-foreground hover:bg-highlight/20 hover:text-highlight shadow-card hover:shadow-md transition-all duration-200",
+        
+        // Ghost with yellow highlights
+        ghost: "hover:bg-highlight/10 hover:text-highlight hover:scale-[1.02] active:scale-[0.98] transition-all duration-200",
+        
+        // Link with yellow color
+        link: "text-highlight underline-offset-4 hover:underline hover:text-highlight-hover transition-colors duration-200",
+        
+        // Hero button with gradient and glow
+        hero: "bg-gradient-hero text-foreground shadow-glow px-8 py-4 text-lg font-semibold hover:shadow-elegant hover:scale-[1.05] active:scale-[0.95] animate-pulse-glow relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-highlight/20 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700",
+        
+        // Accent with yellow theme
+        accent: "bg-accent text-accent-foreground border border-accent/20 hover:bg-highlight hover:text-highlight-foreground hover:border-highlight shadow-card hover:shadow-glow hover:scale-[1.02] active:scale-[0.98]",
+        
+        // Glass effect for dark theme
+        glass: "glass-effect text-foreground border-highlight/20 hover:bg-highlight/20 hover:border-highlight/40 backdrop-blur-md transition-all duration-300",
+        
+        // Success variant
+        success: "bg-success text-success-foreground hover:bg-success/90 shadow-card hover:shadow-md hover:scale-[1.02] active:scale-[0.98]",
+        
+        // Warning variant (yellow)
+        warning: "bg-warning text-warning-foreground hover:bg-warning/90 shadow-card hover:shadow-md hover:scale-[1.02] active:scale-[0.98]",
+        
+        // Info variant
+        info: "bg-info text-info-foreground hover:bg-info/90 shadow-card hover:shadow-md hover:scale-[1.02] active:scale-[0.98]",
+        
+        // Premium gradient with yellow accents
+        premium: "bg-gradient-to-r from-primary via-highlight to-primary bg-size-200 animate-gradient-x text-foreground shadow-glow hover:shadow-elegant hover:scale-[1.02]"
       },
       size: {
         default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3 text-xs",
-        lg: "h-12 rounded-lg px-8 text-base",
-        xl: "h-14 rounded-xl px-10 text-lg",
+        sm: "h-8 rounded-md px-3 text-xs",
+        lg: "h-12 rounded-lg px-6 text-base",
+        xl: "h-14 rounded-xl px-8 text-lg",
+        "2xl": "h-16 rounded-xl px-10 text-xl",
         icon: "h-10 w-10",
         "icon-sm": "h-8 w-8",
         "icon-lg": "h-12 w-12",
+        "icon-xl": "h-14 w-14",
       },
     },
     defaultVariants: {
