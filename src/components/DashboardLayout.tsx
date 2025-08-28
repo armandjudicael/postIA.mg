@@ -125,8 +125,6 @@ const DashboardLayout = ({ children, activeTab = "dashboard", onTabChange }: Das
           {/* User Menu */}
           <div className="flex items-center space-x-3">
             {/* Credits Card */}
-            <Card variant="outline" className="hidden sm:block hover:border-highlight/40 transition-colors">
-              <CardContent className="p-3">
                 <div className="flex items-center space-x-3">
                   <div className="flex items-center space-x-2">
                     <Zap className="h-4 w-4 text-highlight animate-pulse-glow" />
@@ -137,8 +135,6 @@ const DashboardLayout = ({ children, activeTab = "dashboard", onTabChange }: Das
                     Upgrade
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
 
             {/* Theme Toggle */}
             <Button 

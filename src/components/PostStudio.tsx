@@ -455,33 +455,49 @@ const PostStudio = () => {
   if (currentView === 'history') {
     return (
       <div className="min-h-screen bg-gradient-subtle">
-        {/* History Header */}
-        <div className="bg-white border-b border-border sticky top-0 z-10">
-          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                onClick={() => setCurrentView('studio')}
-                className="hover:bg-primary/10"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Studio
-              </Button>
-              <div className="flex items-center space-x-2">
-                <History className="h-5 w-5 text-primary" />
-                <h1 className="text-xl font-bold text-gradient-primary">Post History</h1>
+        {/* Optimized History Header */}
+        <header className="sticky top-0 z-20 bg-background/95 backdrop-blur-md border-b border-border/50 shadow-sm">
+          <div className="container mx-auto px-3 sm:px-4 lg:px-6">
+            <div className="flex items-center justify-between h-14 sm:h-16">
+              {/* Left Section - Navigation & Title */}
+              <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setCurrentView('studio')}
+                  className="hover:bg-primary/10 transition-colors shrink-0"
+                >
+                  <ArrowLeft className="h-4 w-4 mr-1.5" />
+                  <span className="hidden sm:inline">Back</span>
+                </Button>
+                
+                <div className="flex items-center gap-2 min-w-0">
+                  <div className="relative shrink-0">
+                    <div className="absolute inset-0 bg-gradient-secondary rounded-md blur-sm opacity-60" />
+                    <div className="relative rounded-md p-1.5 bg-background border border-highlight/20">
+                      <History className="h-4 w-4 text-highlight" />
+                    </div>
+                  </div>
+                  <h1 className="text-lg sm:text-xl font-semibold text-gradient-yellow truncate">
+                    Post History
+                  </h1>
+                </div>
+              </div>
+
+              {/* Right Section - Actions */}
+              <div className="flex items-center gap-2 shrink-0">
+                <Button
+                  size="sm"
+                  onClick={handleNewPost}
+                  className="bg-gradient-secondary text-highlight-foreground hover:bg-highlight-hover transition-all duration-200 shadow-sm hover:shadow-md"
+                >
+                  <Plus className="h-4 w-4 mr-1.5" />
+                  <span className="hidden sm:inline">New Post</span>
+                </Button>
               </div>
             </div>
-            <Button
-              variant="default"
-              onClick={handleNewPost}
-              className="bg-gradient-primary"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              New Post
-            </Button>
           </div>
-        </div>
+        </header>
 
         {/* History Content */}
         <div className="container mx-auto px-4 py-6">
@@ -573,88 +589,118 @@ const PostStudio = () => {
       />
       
       <div className={`h-full min-h-screen flex flex-col bg-gradient-subtle ${darkMode ? 'dark' : ''}`}>
-        {/* Studio Header */}
-        <div className="bg-white border-b border-border sticky top-0 z-10">
-          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-primary rounded-lg blur-md opacity-60" />
-                  <div className="relative bg-white rounded-lg p-2 border border-primary/20">
-                    <Wand2 className="h-5 w-5 text-primary" />
+        {/* Optimized Studio Header */}
+        <header className="sticky top-0 z-20 bg-background/95 backdrop-blur-md border-b border-border/50 shadow-sm">
+          <div className="container mx-auto px-3 sm:px-4 lg:px-6">
+            <div className="flex items-center justify-between h-14 sm:h-16">
+              {/* Left Section - Brand & Status */}
+              <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+                {/* Brand Logo & Title */}
+                <div className="flex items-center gap-2 shrink-0">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-secondary rounded-md blur-sm opacity-60" />
+                    <div className="relative rounded-md p-1.5 bg-background border border-highlight/20">
+                      <Wand2 className="h-4 w-4 text-highlight" />
+                    </div>
+                  </div>
+                  <h1 className="text-lg sm:text-xl font-semibold text-gradient-yellow">
+                    Post Studio
+                  </h1>
+                </div>
+
+                {/* Status Indicators */}
+                <div className="flex items-center gap-2 min-w-0">
+                  <Badge 
+                    variant="secondary" 
+                    className="bg-highlight/10 text-highlight border-highlight/20 text-xs px-2 py-0.5 shrink-0"
+                  >
+                    <Sparkles className="h-3 w-3 mr-1" />
+                    {editingPost ? 'Editing' : 'Creating'}
+                  </Badge>
+                  
+                  {/* Content Type Indicators - Hidden on mobile */}
+                  <div className="hidden md:flex items-center gap-1">
+                    <Badge 
+                      variant={contentType === 'text' ? 'default' : 'outline'} 
+                      className="text-xs px-2 py-0.5 h-6"
+                    >
+                      <FileText className="h-3 w-3 mr-1" />
+                      Text
+                    </Badge>
+                    <Badge 
+                      variant={contentType === 'image' ? 'default' : 'outline'} 
+                      className="text-xs px-2 py-0.5 h-6"
+                    >
+                      <ImageIcon className="h-3 w-3 mr-1" />
+                      Image
+                    </Badge>
+                    <Badge 
+                      variant={contentType === 'video' ? 'default' : 'outline'} 
+                      className="text-xs px-2 py-0.5 h-6"
+                    >
+                      <Video className="h-3 w-3 mr-1" />
+                      Video
+                    </Badge>
+                    <Badge 
+                      variant={contentType === 'voice' ? 'default' : 'outline'} 
+                      className="text-xs px-2 py-0.5 h-6"
+                    >
+                      <Mic className="h-3 w-3 mr-1" />
+                      Voice
+                    </Badge>
                   </div>
                 </div>
-                <h1 className="text-xl font-bold text-gradient-primary">Post Studio</h1>
               </div>
-              <Badge variant="secondary" className="bg-primary/10 text-primary">
-                <Sparkles className="h-3 w-3 mr-1" />
-                {editingPost ? 'Editing' : 'Creating'}
-              </Badge>
-              <Badge variant={contentType === 'text' ? 'default' : 'outline'} className="hidden sm:flex">
-                <FileText className="h-3 w-3 mr-1" />
-                Text
-              </Badge>
-              <Badge variant={contentType === 'image' ? 'default' : 'outline'} className="hidden sm:flex">
-                <ImageIcon className="h-3 w-3 mr-1" />
-                Image
-              </Badge>
-              <Badge variant={contentType === 'video' ? 'default' : 'outline'} className="hidden sm:flex">
-                <Video className="h-3 w-3 mr-1" />
-                Video
-              </Badge>
-              <Badge variant={contentType === 'voice' ? 'default' : 'outline'} className="hidden sm:flex">
-                <Mic className="h-3 w-3 mr-1" />
-                Voice
-              </Badge>
-            </div>
 
-            <div className="flex items-center space-x-2">
-              <div className="flex items-center space-x-2 mr-2">
-                <Sun className="h-4 w-4" />
-                <Switch 
-                  checked={darkMode} 
-                  onCheckedChange={setDarkMode}
-                  className="data-[state=checked]:bg-primary"
-                />
-                <Moon className="h-4 w-4" />
+              {/* Right Section - Actions */}
+              <div className="flex items-center gap-2 shrink-0">
+                {/* Auto-save Status - Hidden on mobile */}
+                {lastSaved && (
+                  <Badge 
+                    variant="outline" 
+                    className="text-xs px-2 py-0.5 h-6 hidden sm:flex border-muted-foreground/20 text-muted-foreground"
+                  >
+                    <Save className="h-3 w-3 mr-1" />
+                    {lastSaved.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </Badge>
+                )}
+
+                {/* Action Buttons */}
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setCurrentView('history')}
+                  className="hover:bg-primary/10 transition-colors border-border/50"
+                >
+                  <History className="h-4 w-4 mr-1.5" />
+                  <span className="hidden sm:inline">History</span>
+                </Button>
+
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={toggleFullscreen}
+                        className="hover:bg-primary/10 transition-colors border-border/50 px-2.5"
+                      >
+                        {isFullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      {isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
-              <Button 
-                variant="outline" 
-                onClick={() => setCurrentView('history')}
-                className="hover:bg-primary/10"
-              >
-                <History className="h-4 w-4 mr-2" />
-                History
-              </Button>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button 
-                      variant="outline" 
-                      size="icon"
-                      onClick={toggleFullscreen}
-                    >
-                      {isFullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    {isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              {lastSaved && (
-                <Badge variant="outline" className="text-xs hidden sm:flex">
-                  <Save className="h-3 w-3 mr-1" />
-                  Saved {lastSaved.toLocaleTimeString()}
-                </Badge>
-              )}
             </div>
           </div>
-        </div>
+        </header>
 
         {/* Main Content - 3-Panel Layout */}
-        <div className={`container mx-auto px-4 py-6 flex-1 flex flex-col ${isFullscreen ? 'fixed inset-0 z-50 bg-background p-4' : ''}`}>
-          <ResizablePanelGroup direction="horizontal" className="h-full min-h-[calc(100vh-12rem)] rounded-lg border">
+        <div className={`container mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 flex-1 flex flex-col ${isFullscreen ? 'fixed inset-0 z-50 bg-background p-4' : ''}`}>
+          <ResizablePanelGroup direction="horizontal" className="h-full min-h-[calc(100vh-8rem)] rounded-lg border">
             {/* Left Panel - Content Creation */}
             <ResizablePanel 
               defaultSize={25} 
